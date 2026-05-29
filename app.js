@@ -9,8 +9,8 @@ function getSpreadsheetId(urlOrId) {
 let state = {
   budgetData: null,
   connectionMode: "live", // Force always live
-  sheetUrl: localStorage.getItem("budget_sheet_url") || "https://docs.google.com/spreadsheets/d/1t7xcElLKqloriI4eFa-kw7VLzrDHczNvBUeBQ1fI_ME/edit?gid=1298310580",
-  googleClientId: localStorage.getItem("budget_google_client_id") || "36220003517-cpohmrn5slh6tpd1pt4h55p0id8bs8c3.apps.googleusercontent.com",
+  sheetUrl: localStorage.getItem("budget_sheet_url") || "",
+  googleClientId: localStorage.getItem("budget_google_client_id") || "",
   googleAccessToken: sessionStorage.getItem("budget_google_access_token") || "",
   activeMonth: localStorage.getItem("budget_active_month") || "June '26",
   availableMonths: ["June '26", "May '26", "April '26"],
