@@ -502,7 +502,7 @@ function parseGoogleSheetsData(valueRanges) {
   };
 
   const parseKylesZoneTable = (values) => {
-    if (!values || values.length === 0) return { items: [], total: 0, title: "", monthlyBills: 234.00, biweeklyBills: 117.00 };
+    if (!values || values.length === 0) return { items: [], total: 0, title: "", monthlyBills: 0.00, biweeklyBills: 0.00 };
     const title = String(values[0] ? (values[0][1] || "") : "");
     const headers = values[1] ? values[1].map(h => String(h).trim().toLowerCase()) : [];
     const items = [];
@@ -554,7 +554,7 @@ function parseGoogleSheetsData(valueRanges) {
       items.push(item);
     }
     const total = items.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
-    return { items, total, title, monthlyBills: 234.00, biweeklyBills: 117.00 };
+    return { items, total, title, monthlyBills: 0.00, biweeklyBills: 0.00 };
   };
 
   const parseOtherExpensesTable = (values) => {
@@ -583,10 +583,10 @@ function parseGoogleSheetsData(valueRanges) {
   };
 
   const parseMoneyInTable = (values) => {
-    const incomeMonthly = { kyle: 3000, justine: 1800, total: 4800 };
-    const billDepositBiweekly = { kyle: 1202.50, justine: 300.00, total: 1502.50 };
-    const incomeBiweekly = { kyle: 1500, justine: 900, total: 2400 };
-    const personalCashBiweekly = { kyle: 180.51, justine: 600.00, total: 780.51 };
+    const incomeMonthly = { kyle: 0.00, justine: 0.00, total: 0.00 };
+    const billDepositBiweekly = { kyle: 0.00, justine: 0.00, total: 0.00 };
+    const incomeBiweekly = { kyle: 0.00, justine: 0.00, total: 0.00 };
+    const personalCashBiweekly = { kyle: 0.00, justine: 0.00, total: 0.00 };
     
     if (values && values.length > 0) {
       try {
