@@ -321,9 +321,55 @@ body {
     gap: 1.25rem !important;
   }
   
-  /* Smooth touch scrolling */
+  /* Smooth touch scrolling & bottom spacing for navigation */
   body {
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 84px !important;
+  }
+
+  /* Slide-up Bottom Sheet Modals */
+  .modal-slide-container {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+    max-height: 85vh !important;
+  }
+
+  .modal-sheet {
+    max-width: 100% !important;
+    border-radius: 28px 28px 0 0 !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border-color) !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  /* Bottom sheet handle indicator */
+  .sheet-handle {
+    width: 40px;
+    height: 4px;
+    background-color: #cbd5e1;
+    border-radius: 99px;
+    margin: 8px auto 4px auto;
+  }
+  
+  [data-theme="dark"] .sheet-handle {
+    background-color: #475569;
+  }
+
+  /* Inactive states for bottom navigation */
+  .bottom-nav-inactive {
+    opacity: 0.5;
+  }
+  
+  /* Tactile shrink transition on tap */
+  .interactive-tap {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .interactive-tap:active {
+    transform: scale(0.95);
   }
 }
 

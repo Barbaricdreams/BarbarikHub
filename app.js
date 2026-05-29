@@ -154,6 +154,31 @@ function switchTab(tabId) {
     activeTabObj.btn.classList.remove("text-slate-500", "hover:text-slate-700", "dark:text-slate-400", "dark:hover:text-slate-200");
   }
 
+  // Mobile Bottom Nav Style Synchronization
+  const mobileTabIds = ["overview", "ledger", "myzone"];
+  mobileTabIds.forEach(id => {
+    const mobileBtn = document.getElementById(`mobile-tab-${id}`);
+    if (mobileBtn) {
+      if (id === tabId) {
+        mobileBtn.classList.remove("bottom-nav-inactive", "text-slate-400", "dark:text-slate-500");
+        mobileBtn.classList.add("text-brand-primary", "dark:text-white");
+      } else {
+        mobileBtn.classList.add("bottom-nav-inactive", "text-slate-400", "dark:text-slate-500");
+        mobileBtn.classList.remove("text-brand-primary", "dark:text-white");
+      }
+    }
+  });
+
+  // Mobile Floating Action Button Visibility Control
+  const mobileFab = document.getElementById("mobile-fab");
+  if (mobileFab) {
+    if (tabId === "ledger" || tabId === "myzone") {
+      mobileFab.classList.remove("hidden");
+    } else {
+      mobileFab.classList.add("hidden");
+    }
+  }
+
   if (tabId === "ledger") renderLedger();
   else if (tabId === "myzone") renderMyZone();
 }
@@ -1734,12 +1759,12 @@ function renderMobileLedger(items) {
           ${getStatusBadgeHTML(item.category, item.name, item.paid)}
         </div>
         <div class="flex items-center gap-3">
-          <button onclick="openEditBillModal('${item.category}', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-slate-50 dark:bg-slate-850 text-slate-400 hover:text-brand-primary rounded-xl transition-all" title="Edit Bill">
+          <button onclick="openEditBillModal('${item.category}', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-slate-50 hover:bg-brand-primary/10 border border-slate-200 dark:border-slate-800 text-slate-550 dark:text-slate-400 hover:text-brand-primary rounded-xl transition-all" title="Edit Bill">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
             </svg>
           </button>
-          <button onclick="deleteBill('${item.category}', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-brand-red/5 hover:bg-brand-red/10 text-brand-red dark:bg-brand-red/10 dark:hover:bg-brand-red/20 rounded-xl transition-all" title="Delete Bill">
+          <button onclick="deleteBill('${item.category}', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-red-50 hover:bg-brand-red/15 border border-red-200 dark:border-red-900/40 text-brand-red rounded-xl transition-all" title="Delete Bill">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9 9m12 6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9.78-6h4.78M9 9h6m-7 0v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9H8Z" />
             </svg>
@@ -1792,12 +1817,12 @@ function renderMobileMyZone(items) {
           ${getStatusBadgeHTML('kyleszone', item.name, isPaid)}
         </div>
         <div class="flex items-center gap-3">
-          <button onclick="openEditBillModal('kyleszone', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-slate-50 dark:bg-slate-850 text-slate-400 hover:text-brand-primary rounded-xl transition-all" title="Edit Bill">
+          <button onclick="openEditBillModal('kyleszone', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-slate-50 hover:bg-brand-primary/10 border border-slate-200 dark:border-slate-800 text-slate-550 dark:text-slate-400 hover:text-brand-primary rounded-xl transition-all" title="Edit Bill">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
             </svg>
           </button>
-          <button onclick="deleteBill('kyleszone', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-brand-red/5 hover:bg-brand-red/10 text-brand-red dark:bg-brand-red/10 dark:hover:bg-brand-red/20 rounded-xl transition-all" title="Delete Bill">
+          <button onclick="deleteBill('kyleszone', '${item.name.replace(/'/g, "\\'")}')" class="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-red-50 hover:bg-brand-red/15 border border-red-200 dark:border-red-900/40 text-brand-red rounded-xl transition-all" title="Delete Bill">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9 9m12 6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9.78-6h4.78M9 9h6m-7 0v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9H8Z" />
             </svg>

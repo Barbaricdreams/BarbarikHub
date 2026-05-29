@@ -500,10 +500,11 @@
   <!-- Add/Edit Bill Modal (Slide-over/Modal Panel) -->
   <div id="bill-modal" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="bill-modal-title" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300"></div>
-    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
-      <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-100 dark:border-slate-800">
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10 modal-slide-container">
+      <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-100 dark:border-slate-800 modal-sheet">
         
         <!-- Header -->
+        <div class="sheet-handle md:hidden"></div>
         <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <h2 id="bill-modal-title" class="text-lg font-extrabold tracking-tight">Add New Bill</h2>
           <button onclick="closeBillModal()" class="p-1.5 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600 rounded-lg">
@@ -519,12 +520,12 @@
           <input type="hidden" id="bill-edit-original-category">
           
           <div class="flex flex-col gap-2">
-            <label for="bill-name" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Bill Name</label>
+            <label for="bill-name" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Bill Name</label>
             <input type="text" id="bill-name" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. Electric, Netflix">
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="bill-category" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Category</label>
+            <label for="bill-category" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Category</label>
             <select id="bill-category" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
               <option value="utilities">Utilities</option>
               <option value="entertainment">Fun / Entertainment</option>
@@ -535,23 +536,23 @@
           </div>
 
           <div id="bill-balance-group" class="flex flex-col gap-2 hidden">
-            <label for="bill-balance" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Loan Balance (Optional)</label>
+            <label for="bill-balance" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Loan Balance (Optional)</label>
             <input type="text" id="bill-balance" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 4950.00 or -">
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="bill-cost" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Monthly Cost</label>
+            <label for="bill-cost" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Monthly Cost</label>
             <input type="number" step="0.01" id="bill-cost" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 50.00">
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="bill-date" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Due Date</label>
+            <label for="bill-date" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Due Date</label>
             <input type="text" id="bill-date" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 15th, N/A">
           </div>
 
           <div class="flex items-center gap-3 mt-2">
             <input type="checkbox" id="bill-paid" class="custom-checkbox h-5 w-5">
-            <label for="bill-paid" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 cursor-pointer">Mark as Paid</label>
+            <label for="bill-paid" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400 cursor-pointer">Mark as Paid</label>
           </div>
           
           <button type="submit" class="hidden" id="bill-form-submit-hidden"></button>
@@ -570,10 +571,11 @@
   <!-- Settings Slide-over Panel (Modal Modal) -->
   <div id="settings-modal" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300"></div>
-    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
-      <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-100 dark:border-slate-800">
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10 modal-slide-container">
+      <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-100 dark:border-slate-800 modal-sheet">
         
         <!-- Header -->
+        <div class="sheet-handle md:hidden"></div>
         <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <h2 class="text-lg font-extrabold tracking-tight">Sync Settings</h2>
           <button id="settings-close-btn" class="p-1.5 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600 rounded-lg">
@@ -584,22 +586,22 @@
         </div>
 
         <!-- Body -->
-        <div class="p-6 flex-1 flex flex-col gap-6">
+        <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto">
           <div class="flex flex-col gap-2">
-            <label for="sheet-url" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Google Sheet URL or ID</label>
+            <label for="sheet-url" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Google Sheet URL or ID</label>
             <input type="text" id="sheet-url" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
             <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
               Paste your Google Sheet URL here to enable direct, secure sync!
             </p>
 
-            <label for="google-client-id" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-4">Google OAuth Client ID</label>
+            <label for="google-client-id" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400 mt-4">Google OAuth Client ID</label>
             <input type="text" id="google-client-id" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="1234567890-abc123xyz.apps.googleusercontent.com">
             <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
               Required to authorize secure queries to your private Google Sheet.
             </p>
 
             <div class="mt-4 border-t border-slate-100 dark:border-slate-850 pt-4 flex flex-col gap-3">
-              <label class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Google Account Authorization</label>
+              <label class="text-xs font-extrabold uppercase tracking-widest text-slate-455 dark:text-slate-400">Google Account Authorization</label>
               <div class="flex items-center gap-3">
                 <button id="google-signin-btn" class="flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all shadow-sm">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -628,6 +630,41 @@
       </div>
     </div>
   </div>
+
+  <!-- Floating Action Button (FAB) for Ledger / Add Bill -->
+  <button id="mobile-fab" onclick="openAddBillModal()" class="fixed bottom-24 right-5 z-40 hidden p-4 bg-brand-primary text-white rounded-full shadow-2xl shadow-brand-primary/40 flex items-center justify-center interactive-tap" title="Add New Bill">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  </button>
+
+  <!-- Mobile Premium Bottom Navigation Bar -->
+  <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/40 p-2 flex items-center justify-around shadow-lg transition-all">
+    <button id="mobile-tab-overview" onclick="switchTab('overview')" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25a2.25 2.25 0 0 1 2.25 2.25V8.25A2.25 2.25 0 0 1 6 10.5H3.75V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+      </svg>
+      <span class="text-[10px] font-bold uppercase tracking-wider">Overview</span>
+    </button>
+    <button id="mobile-tab-ledger" onclick="switchTab('ledger')" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12M8.25 17.25h12M3.75 6.75h.007v.008H3.75V6.75Zm0 5.25h.007v.008H3.75V12Zm0 5.25h.007v.008H3.75v-.008Z" />
+      </svg>
+      <span class="text-[10px] font-bold uppercase tracking-wider">Ledger</span>
+    </button>
+    <button id="mobile-tab-myzone" onclick="switchTab('myzone')" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+      </svg>
+      <span class="text-[10px] font-bold uppercase tracking-wider">My Zone</span>
+    </button>
+    <button onclick="document.getElementById('settings-close-btn') ? document.getElementById('settings-btn').click() : null" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.594 3.94ZM12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+      </svg>
+      <span class="text-[10px] font-bold uppercase tracking-wider">Settings</span>
+    </button>
+  </nav>
 
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
