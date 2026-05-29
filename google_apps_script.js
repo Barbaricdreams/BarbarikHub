@@ -275,8 +275,8 @@ function parseKylesZone(sheet, startCol, endCol, startRow, fallbackEndRow) {
   
   return {
     title: titleVal,
-    monthlyBills: 234.00,
-    biweeklyBills: 117.00,
+    monthlyBills: 0.00,
+    biweeklyBills: 0.00,
     items: items,
     total: total
   };
@@ -329,10 +329,10 @@ function parseMoneyIn(sheet, startCol, endCol, startRow, fallbackEndRow) {
   const range = sheet.getRange(startRow, startColIdx, 10, numCols);
   const values = range.getValues();
   
-  const incomeMonthly = { kyle: 3000, justine: 1800, total: 4800 };
-  const billDepositBiweekly = { kyle: 1202.50, justine: 300.00, total: 1502.50 }; // Dynamically synced
-  const incomeBiweekly = { kyle: 1500, justine: 900, total: 2400 };
-  const personalCashBiweekly = { kyle: 180.51, justine: 600.00, total: 780.51 }; // Dynamically synced
+  const incomeMonthly = { kyle: 0.00, justine: 0.00, total: 0.00 };
+  const billDepositBiweekly = { kyle: 0.00, justine: 0.00, total: 0.00 }; // Dynamically synced
+  const incomeBiweekly = { kyle: 0.00, justine: 0.00, total: 0.00 };
+  const personalCashBiweekly = { kyle: 0.00, justine: 0.00, total: 0.00 }; // Dynamically synced
   
   try {
     for (let r = 1; r < values.length; r++) {
