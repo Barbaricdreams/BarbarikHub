@@ -596,6 +596,7 @@ function parseGoogleSheetsData(valueRanges) {
       try {
         console.log("DEBUG: parseMoneyInTable raw values:", JSON.stringify(values));
         let inSecondTable = false;
+        let secondTableDataRowCount = 0;
         
         for (let r = 1; r < values.length; r++) {
           const row = values[r];
@@ -603,35 +604,43 @@ function parseGoogleSheetsData(valueRanges) {
           const colL = String(row[0] || "").trim().toLowerCase();
           console.log(`DEBUG: Row ${r} (inSecondTable=${inSecondTable}): colL="${colL}", full row:`, row);
           
-          if (colL === "kyle") {
-            if (!inSecondTable) {
+          if (!inSecondTable) {
+            if (colL === "kyle") {
               incomeMonthly.kyle = cleanNumber(row[1]) || incomeMonthly.kyle;
-              billDepositBiweekly.kyle = cleanNumber(row[3]) || billDepositBiweekly.kyle;
+              billDepositBiweekly.kyle = cleanNumber(row[2]) || billDepositBiweekly.kyle;
               console.log(`DEBUG: Monthly Kyle - Income=${incomeMonthly.kyle}, Deposit=${billDepositBiweekly.kyle}`);
-            } else {
-              incomeBiweekly.kyle = cleanNumber(row[1]) || incomeBiweekly.kyle;
-              personalCashBiweekly.kyle = cleanNumber(row[3]) || personalCashBiweekly.kyle;
-              console.log(`DEBUG: Biweekly Kyle - Pay=${incomeBiweekly.kyle}, Pocket=${personalCashBiweekly.kyle}`);
             }
-          }
-          else if (colL === "justine") {
-            if (!inSecondTable) {
+            else if (colL === "justine") {
               incomeMonthly.justine = cleanNumber(row[1]) || incomeMonthly.justine;
-              billDepositBiweekly.justine = cleanNumber(row[3]) || billDepositBiweekly.justine;
+              billDepositBiweekly.justine = cleanNumber(row[2]) || billDepositBiweekly.justine;
               console.log(`DEBUG: Monthly Justine - Income=${incomeMonthly.justine}, Deposit=${billDepositBiweekly.justine}`);
-            } else {
-              incomeBiweekly.justine = cleanNumber(row[1]) || incomeBiweekly.justine;
-              personalCashBiweekly.justine = cleanNumber(row[3]) || personalCashBiweekly.justine;
-              console.log(`DEBUG: Biweekly Justine - Pay=${incomeBiweekly.justine}, Pocket=${personalCashBiweekly.justine}`);
             }
-          }
-          else if (colL === "total") {
-            if (!inSecondTable) {
+            else if (colL === "total") {
               incomeMonthly.total = cleanNumber(row[1]) || incomeMonthly.total;
-              billDepositBiweekly.total = cleanNumber(row[3]) || billDepositBiweekly.total;
+              billDepositBiweekly.total = cleanNumber(row[2]) || billDepositBiweekly.total;
               console.log(`DEBUG: Monthly Total - Income=${incomeMonthly.total}, Deposit=${billDepositBiweekly.total}`);
               inSecondTable = true; // First table's Total is the transition point to the second table
-            } else {
+            }
+          } else {
+            // We are in the second table (biweekly breakdown)
+            const isHeader = colL.includes("income") || colL.includes("person") || colL.includes("biweekly") || colL === "";
+            if (isHeader) continue;
+            
+            secondTableDataRowCount++;
+            if (secondTableDataRowCount === 1) {
+              // Kyle's biweekly row
+              incomeBiweekly.kyle = cleanNumber(row[0]) || incomeBiweekly.kyle;
+              personalCashBiweekly.kyle = cleanNumber(row[2]) || personalCashBiweekly.kyle;
+              console.log(`DEBUG: Biweekly Kyle - Pay=${incomeBiweekly.kyle}, Pocket=${personalCashBiweekly.kyle}`);
+            }
+            else if (secondTableDataRowCount === 2) {
+              // Justine's biweekly row
+              incomeBiweekly.justine = cleanNumber(row[0]) || incomeBiweekly.justine;
+              personalCashBiweekly.justine = cleanNumber(row[2]) || personalCashBiweekly.justine;
+              console.log(`DEBUG: Biweekly Justine - Pay=${incomeBiweekly.justine}, Pocket=${personalCashBiweekly.justine}`);
+            }
+            else if (secondTableDataRowCount === 3 || colL === "total") {
+              // Total biweekly row
               incomeBiweekly.total = cleanNumber(row[1]) || incomeBiweekly.total;
               personalCashBiweekly.total = cleanNumber(row[3]) || personalCashBiweekly.total;
               console.log(`DEBUG: Biweekly Total - Pay=${incomeBiweekly.total}, Pocket=${personalCashBiweekly.total}`);
