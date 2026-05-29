@@ -740,8 +740,12 @@ function updateDashboardData() {
   
   const safetySurplus = monthlyIncome - (biweeklyDeposit * 2) - kylePersonalExpenses;
   
-  const weeks12PocketCash = d.moneyIn.personalCashBiweekly.kyle;
-  const weeks34PocketCash = d.moneyIn.personalCashBiweekly.justine;
+  const kyleBiweeklyDepositVal = d.moneyIn.billDepositBiweekly.kyle || 0;
+  const justineBiweeklyDepositVal = d.moneyIn.billDepositBiweekly.justine || 0;
+  const kyleZoneBiweeklyVal = (d.kylesZone.total || 0) / 2;
+  
+  const weeks12PocketCash = (d.moneyIn.incomeBiweekly.kyle || 0) - kyleBiweeklyDepositVal - kyleZoneBiweeklyVal;
+  const weeks34PocketCash = (d.moneyIn.incomeBiweekly.justine || 0) - justineBiweeklyDepositVal;
   
   // Render Summary Cards
   elements.cardMonthlyIncome.innerText = formatCurrency(monthlyIncome);
@@ -749,8 +753,6 @@ function updateDashboardData() {
   elements.labelJustineMonthly.innerText = formatCurrency(justineMonthly);
   
   elements.cardBiweeklyDeposit.innerText = formatCurrencyPrecise(biweeklyDeposit);
-  const kyleBiweeklyDepositVal = d.moneyIn.billDepositBiweekly.kyle || 0;
-  const justineBiweeklyDepositVal = d.moneyIn.billDepositBiweekly.justine || 0;
   if (document.getElementById("label-kyle-biweekly-deposit")) {
     document.getElementById("label-kyle-biweekly-deposit").innerText = formatCurrency(kyleBiweeklyDepositVal);
   }
@@ -758,7 +760,7 @@ function updateDashboardData() {
     document.getElementById("label-justine-biweekly-deposit").innerText = formatCurrency(justineBiweeklyDepositVal);
   }
 
-  const combinedPocketCash = d.moneyIn.personalCashBiweekly.total || (weeks12PocketCash + weeks34PocketCash);
+  const combinedPocketCash = weeks12PocketCash + weeks34PocketCash;
   elements.cardPocketCash.innerText = formatCurrencyPrecise(combinedPocketCash);
   if (document.getElementById("label-kyle-pocket")) {
     document.getElementById("label-kyle-pocket").innerText = formatCurrencyPrecise(weeks12PocketCash);
