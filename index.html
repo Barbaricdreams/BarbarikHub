@@ -40,50 +40,62 @@
 <body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#0b0f19] dark:text-slate-100">
 
   <!-- Main Container -->
-  <div class="max-w-[1440px] mx-auto p-4 md:p-8 min-h-screen flex flex-col gap-6">
+  <div class="max-w-[1440px] mx-auto p-3 md:p-8 min-h-screen flex flex-col gap-4 md:gap-6">
 
     <!-- Header Section -->
-    <header class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md p-4 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-sm">
+    <header class="sticky top-2 md:top-6 z-50 flex flex-col lg:flex-row items-center justify-between gap-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-3 md:p-4 rounded-3xl border border-slate-100/90 dark:border-slate-800/40 shadow-lg transition-all duration-300">
       <!-- Logo & Sync Badge -->
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-brand-primary text-white rounded-2xl shadow-lg shadow-brand-primary/20">
-          <!-- Beautiful Wallet SVG Icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9" />
-          </svg>
-        </div>
-        <div>
-          <h1 class="text-xl font-extrabold tracking-wider text-slate-800 dark:text-white uppercase">Budget Hub</h1>
-          <div class="flex items-center gap-1.5 mt-0.5">
-            <span class="w-2 h-2 rounded-full bg-brand-green sync-pulse"></span>
-            <span id="sync-status" class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Live Budget Sync</span>
+      <div class="flex items-center justify-between lg:justify-start w-full lg:w-auto gap-3">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-brand-primary text-white rounded-2xl shadow-lg shadow-brand-primary/20">
+            <!-- Beautiful Wallet SVG Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5.5 h-5.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9" />
+            </svg>
           </div>
+          <div>
+            <h1 class="text-lg font-extrabold tracking-wider text-slate-800 dark:text-white uppercase leading-none">Budget Hub</h1>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green sync-pulse"></span>
+              <span id="sync-status" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Live Sync</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick theme toggle inside logo block on mobile to save vertical real estate -->
+        <div class="flex lg:hidden items-center gap-2">
+          <!-- Refresh -->
+          <button id="refresh-btn-mobile" onclick="document.getElementById('refresh-btn').click()" class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors" title="Sync Data">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4.5 h-4.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+          </button>
         </div>
       </div>
 
       <!-- Month Dropdown Selector -->
-      <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl w-full md:w-auto">
-        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 pl-2">Active Month</span>
-        <select id="header-month-select" aria-label="Select Active Month" class="bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold rounded-xl px-4 py-2 border-none focus:outline-none cursor-pointer shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors" onchange="changeActiveMonth(this.value)">
+      <div class="flex items-center gap-2 bg-slate-100/80 dark:bg-slate-800/60 p-1.5 rounded-2xl w-full lg:w-auto">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 pl-2 shrink-0">Active Month</span>
+        <select id="header-month-select" aria-label="Select Active Month" class="w-full bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold rounded-xl px-4 py-2 border-none focus:outline-none cursor-pointer shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors" onchange="changeActiveMonth(this.value)">
           <!-- Options populated dynamically -->
         </select>
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl w-full md:w-auto">
-        <button id="tab-overview" class="flex-1 md:flex-initial px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase transition-all duration-300 bg-white text-brand-primary shadow-sm dark:bg-slate-700 dark:text-white" onclick="switchTab('overview')">
+      <nav class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/60 p-1.5 rounded-2xl w-full lg:w-auto overflow-x-auto no-scrollbar">
+        <button id="tab-overview" class="flex-1 lg:flex-initial px-5 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 bg-white text-brand-primary shadow-sm dark:bg-slate-700 dark:text-white" onclick="switchTab('overview')">
           Overview
         </button>
-        <button id="tab-ledger" class="flex-1 md:flex-initial px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase transition-all duration-300 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" onclick="switchTab('ledger')">
-          Bill Ledger
+        <button id="tab-ledger" class="flex-1 lg:flex-initial px-5 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" onclick="switchTab('ledger')">
+          Ledger
         </button>
-        <button id="tab-myzone" class="flex-1 md:flex-initial px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase transition-all duration-300 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" onclick="switchTab('myzone')">
+        <button id="tab-myzone" class="flex-1 lg:flex-initial px-5 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" onclick="switchTab('myzone')">
           My Zone
         </button>
       </nav>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-3">
+      <!-- Action Buttons (hidden on mobile, handled in compact logo header block) -->
+      <div class="hidden lg:flex items-center gap-3">
         <!-- Refresh Button -->
         <button id="refresh-btn" class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors" title="Sync Data Now">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
@@ -98,7 +110,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M9.75 15h.008v.008H9.75V15Zm0-6h.008v.008H9.75V9Zm6 6h.008v.008h-.008V15Zm0-6h.008v.008h-.008V9ZM3.75 12h2.25m13.5 0H21M5.75 5.75l1.59 1.59m11.32 11.32 1.59 1.59m-1.59-11.32-1.59 1.59M7.34 16.66l-1.59 1.59M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z" />
           </svg>
           <!-- Moon Icon -->
-          <svg id="theme-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+          <svg id="theme-moon" xmlns="http://www.w3.org/2500/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
           </svg>
         </button>
@@ -317,39 +329,41 @@
     <main id="view-ledger" class="hidden flex flex-col gap-6">
       
       <!-- Ledger Header Controls -->
-      <section class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <section class="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 class="text-xl font-extrabold tracking-tight">Bill Ledger Center</h2>
           <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Consolidated Active Bill Tracking</p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
           <!-- Search Bar -->
-          <div class="relative w-full sm:w-64">
+          <div class="relative w-full md:w-64">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.636Z" />
               </svg>
             </span>
-            <input type="text" id="ledger-search" class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="Search bills...">
+            <input type="text" id="ledger-search" class="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="Search bills...">
           </div>
 
-          <!-- Category Filter -->
-          <select id="ledger-category-filter" class="px-4 py-2 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
-            <option value="all">All Categories</option>
-            <option value="utilities">Utilities</option>
-            <option value="entertainment">Fun / Entertainment</option>
-            <option value="debt">Debt</option>
-            <option value="transportation">Cars / Transportation</option>
-          </select>
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <!-- Category Filter -->
+            <select id="ledger-category-filter" class="flex-1 sm:flex-initial px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
+              <option value="all">All Categories</option>
+              <option value="utilities">Utilities</option>
+              <option value="entertainment">Fun / Entertainment</option>
+              <option value="debt">Debt</option>
+              <option value="transportation">Cars / Transportation</option>
+            </select>
 
-          <!-- Add Bill Button -->
-          <button onclick="openAddBillModal()" class="px-5 py-2 text-sm font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 flex items-center gap-1.5 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            Add Bill
-          </button>
+            <!-- Add Bill Button -->
+            <button onclick="openAddBillModal()" class="flex-1 sm:flex-initial px-5 py-2.5 text-sm font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 flex items-center justify-center gap-1.5 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Add Bill
+            </button>
+          </div>
         </div>
       </section>
 

@@ -308,3 +308,22 @@ body {
   color: white;
 }
 
+/* Premium Mobile responsive design overrides */
+@media (max-width: 768px) {
+  /* Prevent iOS Safari keyboard auto-zoom */
+  select, input, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Compact viewport padding & spacing */
+  .max-w-\[1440px\] {
+    padding: 0.5rem 0.75rem !important;
+    gap: 1.25rem !important;
+  }
+  
+  /* Smooth touch scrolling */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
