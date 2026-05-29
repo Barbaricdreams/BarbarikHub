@@ -308,7 +308,7 @@ function setupEventListeners() {
     const inputVal = (elements.googleClientIdInput && elements.googleClientIdInput.value) ? elements.googleClientIdInput.value.trim() : "";
     const clientId = inputVal || state.googleClientId || "";
     if (!clientId) {
-      alert("⚠️ Please enter your Google OAuth Client ID first!");
+      showToast("Please enter your Google OAuth Client ID first!", "warning");
       return;
     }
     state.googleClientId = clientId;
@@ -329,7 +329,7 @@ function setupEventListeners() {
     const isPublicHost = hostname.endsWith("github.io") || (hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "::1" && hostname !== "");
 
     if (isPublicHost) {
-      alert("⚠️ Settings are disabled on the public site for privacy. Configure locally.");
+      showToast("Settings are disabled on the public site for privacy. Configure locally.", "warning");
       closeModal();
       return;
     }
@@ -703,7 +703,7 @@ function requestGoogleAuthToken(silent = false) {
           elements.syncStatus.title = `Full error: ${JSON.stringify(err)}`;
         }
         if (!silent) {
-          alert(`⚠️ Google Auth Failed: ${errorMsg}\n\nIf you see "origin_mismatch", add your GitHub Pages origin to Google Cloud Console OAuth client authorized origins.`);
+          showToast(`Google Auth Failed: ${errorMsg}. If origin_mismatch, authorize your origin in Google Console.`, "error");
         }
       }
     });
@@ -711,7 +711,7 @@ function requestGoogleAuthToken(silent = false) {
   } catch (e) {
     console.error("GIS load failed:", e);
     if (!silent) {
-      alert("⚠️ Failed to load Google Sign-In SDK. Make sure your network connects to google.com!");
+      showToast("Failed to load Google Sign-In SDK. Make sure your network connects to google.com!", "error");
     }
   }
 }
@@ -1043,9 +1043,9 @@ function renderLedger() {
       <td class="p-5 capitalize text-xs font-extrabold text-slate-400 dark:text-slate-500">${cat === "entertainment" ? "Fun" : cat}</td>
       <td class="p-5 text-slate-400 dark:text-slate-500 font-semibold">${dateLabel}</td>
       <td class="p-5 font-extrabold text-slate-800 dark:text-white">${formatCurrency(item.cost)}</td>
-      <td class="p-5 text-center">
+      <td class="p-5 text-center select-none">
         <div class="flex justify-center">
-          <input type="checkbox" class="custom-checkbox h-5 w-5" ${item.paid ? "checked" : ""} onchange="toggleBillPaid('${cat}', '${item.name}', this.checked, this)">
+          ${getStatusBadgeHTML(cat, item.name, item.paid)}
         </div>
       </td>
       <td class="p-5 text-center">
@@ -1066,11 +1066,14 @@ function renderLedger() {
     elements.ledgerTbody.appendChild(tr);
   });
   
+  // Render Mobile Stacked Card List
+  renderMobileLedger(allFilteredItems);
+  
   if (allFilteredItems.length === 0) {
     elements.ledgerTbody.innerHTML = `
       <tr>
         <td colspan="6" class="p-8 text-center text-slate-400 dark:text-slate-500 font-bold">
-          No matching active bills found
+          ${getEmptyStateSVG()}
         </td>
       </tr>
     `;
@@ -1082,7 +1085,7 @@ window.toggleBillPaid = async function(category, itemName, isChecked, checkboxEl
   const paidKey = `${state.activeMonth}:${category}:${itemName}`;
   
   if (!state.googleAccessToken) {
-    alert("⚠️ You must sign in with Google in settings to authorize changes!");
+    showToast("You must sign in with Google in settings to authorize changes!", "warning");
     if (checkboxElem) checkboxElem.checked = !isChecked;
     return;
   }
@@ -1151,6 +1154,7 @@ window.toggleBillPaid = async function(category, itemName, isChecked, checkboxEl
     
     elements.syncStatus.innerText = "Synced Live";
     elements.syncStatus.className = "text-xs font-semibold uppercase tracking-wider text-brand-green";
+    showToast(`Bill "${itemName}" marked as ${isChecked ? 'PAID' : 'UNPAID'}!`, "success");
     updateDashboardData();
   } catch (e) {
     console.error("Failed to write checkbox change to Google Sheets!", e);
@@ -1158,7 +1162,7 @@ window.toggleBillPaid = async function(category, itemName, isChecked, checkboxEl
     
     elements.syncStatus.innerText = "Write Error";
     elements.syncStatus.className = "text-xs font-semibold uppercase tracking-wider text-brand-red";
-    alert(`⚠️ Could not write checkmark to Google Sheet! Check your connection or token state.`);
+    showToast(`Could not write change for "${itemName}" to Google Sheet!`, "error");
   }
 };
 
@@ -1191,9 +1195,9 @@ function renderMyZone() {
       <td class="py-4 px-2 text-right font-extrabold text-slate-800 dark:text-white">${formatCurrency(item.cost)}</td>
       <td class="py-4 px-2 text-right text-slate-400 dark:text-slate-500 font-semibold">${debtLabel}</td>
       <td class="py-4 px-2 text-right text-slate-400 dark:text-slate-500 font-semibold">${dateLabel}</td>
-      <td class="py-4 px-2 text-center">
+      <td class="py-4 px-2 text-center select-none">
         <div class="flex justify-center">
-          <input type="checkbox" class="custom-checkbox h-4.5 w-4.5" ${isPaid ? "checked" : ""} onchange="toggleBillPaid('kyleszone', '${item.name}', this.checked, this)">
+          ${getStatusBadgeHTML('kyleszone', item.name, isPaid)}
         </div>
       </td>
       <td class="py-4 px-2 text-center">
@@ -1213,6 +1217,9 @@ function renderMyZone() {
     `;
     elements.myzoneBillsTbody.appendChild(tr);
   });
+  
+  // Render Mobile Stacked Card List
+  renderMobileMyZone(kyleItems);
   
 }
 
@@ -1392,7 +1399,7 @@ window.saveBillFormData = async function(event) {
 async function writeCategoryToGoogleSheets(category) {
   const spreadsheetId = getSpreadsheetId(state.sheetUrl);
   if (!spreadsheetId || !state.googleAccessToken) {
-    alert("⚠️ Authentication credentials or Spreadsheet ID missing!");
+    showToast("Authentication credentials or Spreadsheet ID missing!", "error");
     return;
   }
   
@@ -1499,12 +1506,13 @@ async function writeCategoryToGoogleSheets(category) {
     const now = new Date();
     elements.footerSyncTime.innerText = `Last updated: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
     
+    showToast(`${category === "kyleszone" ? "Kyle's Zone" : category.charAt(0).toUpperCase() + category.slice(1)} ledger updated successfully!`, "success");
     updateDashboardData();
   } catch (err) {
     console.error("Failed to write updated category items to Google Sheet!", err);
     elements.syncStatus.innerText = "Write Error";
     elements.syncStatus.className = "text-xs font-semibold uppercase tracking-wider text-brand-red";
-    alert("⚠️ Could not write ledger updates to Google Sheet! Check your connection.");
+    showToast("Could not write updates to Google Sheet! Check your connection.", "error");
   }
 }
 
@@ -1622,6 +1630,221 @@ function checkAndCelebrateAllPaid() {
     setTimeout(() => launchConfetti(), 400); // Short delay for UI to update first
   }
 }
+
+// Premium custom toast engine replacing blocking alert() calls
+function showToast(message, type = "success") {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+  
+  const toast = document.createElement("div");
+  toast.className = `toast shadow-xl`;
+  
+  let svgIcon = "";
+  let accentColor = "";
+  
+  switch(type) {
+    case "success":
+      svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5 text-brand-green shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>`;
+      accentColor = "border-l-4 border-l-brand-green";
+      break;
+    case "error":
+      svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5 text-brand-red shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>`;
+      accentColor = "border-l-4 border-l-brand-red";
+      break;
+    case "warning":
+      svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-amber-500 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z" /></svg>`;
+      accentColor = "border-l-4 border-l-amber-500";
+      break;
+    default:
+      svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-brand-primary shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.085 1.085l-.04.04m-1.085 1.085h.008v.008H12v-.008ZM21 12a9 9 0 11-18 0 9 9 0 0 1 18 0Z" /></svg>`;
+      accentColor = "border-l-4 border-l-brand-primary";
+  }
+  
+  toast.className += ` ${accentColor}`;
+  toast.innerHTML = `
+    ${svgIcon}
+    <div class="text-xs font-bold text-slate-800 dark:text-slate-100 pr-1 flex-1 leading-relaxed select-none">${message}</div>
+    <button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500 shrink-0 transition-colors" onclick="this.parentElement.remove()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+  `;
+  
+  container.appendChild(toast);
+  
+  setTimeout(() => toast.classList.add("show"), 10);
+  
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 400);
+  }, 3500);
+}
+
+// Helper to render interactive premium status badge
+function getStatusBadgeHTML(cat, name, isPaid) {
+  const label = isPaid ? "Paid" : "Due";
+  const pillClass = isPaid ? "status-pill-paid" : "status-pill-due";
+  
+  const icon = isPaid 
+    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>`
+    : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM9 7a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V7Zm1 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>`;
+  
+  return `
+    <button onclick="toggleBillPaid('${cat}', '${name.replace(/'/g, "\\'")}', ${!isPaid}, this)" class="status-pill ${pillClass}">
+      ${icon}
+      <span>${label}</span>
+    </button>
+  `;
+}
+
+// Mobile Ledger Card List renderer
+function renderMobileLedger(items) {
+  const container = document.getElementById("mobile-ledger-list");
+  if (!container) return;
+  
+  container.innerHTML = "";
+  
+  items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "glass-card rounded-2xl p-5 border border-slate-100 dark:border-slate-800/40 shadow-sm flex flex-col gap-4 relative overflow-hidden";
+    
+    let borderAccent = "border-l-4 border-l-slate-400";
+    switch(item.category) {
+      case "utilities": borderAccent = "border-l-4 border-l-brand-primary"; break;
+      case "entertainment": borderAccent = "border-l-4 border-l-brand-pink"; break;
+      case "debt": borderAccent = "border-l-4 border-l-brand-red"; break;
+      case "transportation": borderAccent = "border-l-4 border-l-brand-teal"; break;
+    }
+    card.className += ` ${borderAccent}`;
+    
+    const dateLabel = item.date && item.date !== "N/A" ? item.date : "Monthly";
+    
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-tight">${item.name}</div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">${item.category === "entertainment" ? "Fun" : item.category} • Due: ${dateLabel}</div>
+        </div>
+        <div class="text-right">
+          <div class="text-base font-extrabold text-slate-800 dark:text-white">${formatCurrency(item.cost)}</div>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between border-t border-slate-100/60 dark:border-slate-800/20 pt-3 mt-1 select-none">
+        <div>
+          ${getStatusBadgeHTML(item.category, item.name, item.paid)}
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="openEditBillModal('${item.category}', '${item.name.replace(/'/g, "\\'")}')" class="p-2 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:text-brand-primary rounded-xl transition-all" title="Edit Bill">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+          <button onclick="deleteBill('${item.category}', '${item.name.replace(/'/g, "\\'")}')" class="p-2 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:text-brand-red rounded-xl transition-all" title="Delete Bill">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9 9m12 6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9.78-6h4.78M9 9h6m-7 0v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9H8Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  
+  if (items.length === 0) {
+    container.innerHTML = `
+      <div class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm min-h-[220px]">
+        ${getEmptyStateSVG()}
+      </div>
+    `;
+  }
+}
+
+// Mobile My Zone Card List renderer
+function renderMobileMyZone(items) {
+  const container = document.getElementById("mobile-myzone-list");
+  if (!container) return;
+  
+  container.innerHTML = "";
+  
+  items.forEach(item => {
+    const paidKey = `${state.activeMonth}:kyleszone:${item.name}`;
+    const isPaid = state.paidStates[paidKey] !== undefined ? state.paidStates[paidKey] : (item.paid || false);
+    
+    const card = document.createElement("div");
+    card.className = "glass-card border-l-4 border-l-brand-primary rounded-2xl p-5 border border-slate-100 dark:border-slate-800/40 shadow-sm flex flex-col gap-4 relative overflow-hidden";
+    
+    const debtLabel = item.debt && item.debt !== "-" ? formatCurrency(item.debt) : "-";
+    const dateLabel = item.date || "N/A";
+    
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-tight">${item.name}</div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Due: ${dateLabel} • Balance: ${debtLabel}</div>
+        </div>
+        <div class="text-right">
+          <div class="text-base font-extrabold text-slate-800 dark:text-white">${formatCurrency(item.cost)}</div>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between border-t border-slate-100/60 dark:border-slate-800/20 pt-3 mt-1 select-none">
+        <div>
+          ${getStatusBadgeHTML('kyleszone', item.name, isPaid)}
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="openEditBillModal('kyleszone', '${item.name.replace(/'/g, "\\'")}')" class="p-2 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:text-brand-primary rounded-xl transition-all" title="Edit Bill">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+          <button onclick="deleteBill('kyleszone', '${item.name.replace(/'/g, "\\'")}')" class="p-2 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:text-brand-red rounded-xl transition-all" title="Delete Bill">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9 9m12 6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9.78-6h4.78M9 9h6m-7 0v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9H8Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  
+  if (items.length === 0) {
+    container.innerHTML = `
+      <div class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm min-h-[220px]">
+        ${getEmptyStateSVG()}
+      </div>
+    `;
+  }
+}
+
+// Illustrated dynamic empty state card
+function getEmptyStateSVG() {
+  const hasFilterActive = elements.ledgerSearch.value.trim() !== "" || elements.ledgerCategoryFilter.value !== "all";
+  const ctaBtn = hasFilterActive 
+    ? `<button onclick="clearSearchFilters()" class="mt-4 px-5 py-2 text-xs font-bold uppercase tracking-wider bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white rounded-xl transition-all">Clear Search Filters</button>`
+    : `<button onclick="openAddBillModal()" class="mt-4 px-5 py-2 text-xs font-bold uppercase tracking-wider bg-brand-primary text-white rounded-xl shadow-lg shadow-brand-primary/10 transition-all">Add a Bill</button>`;
+  
+  return `
+    <div class="flex flex-col items-center justify-center p-6 text-center select-none animate-fadeIn">
+      <svg class="w-20 h-20 text-slate-200 dark:text-slate-800/80 mb-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+      <div class="text-sm font-extrabold text-slate-700 dark:text-slate-200 leading-tight">No Active Bills Found</div>
+      <div class="text-[10px] font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 mt-1">Try adjusting your filters or add a new record</div>
+      ${ctaBtn}
+    </div>
+  `;
+}
+window.getEmptyStateSVG = getEmptyStateSVG;
+window.getStatusBadgeHTML = getStatusBadgeHTML;
+window.showToast = showToast;
+
+// Helper to clear search filters
+window.clearSearchFilters = function() {
+  elements.ledgerSearch.value = "";
+  elements.ledgerCategoryFilter.value = "all";
+  renderLedger();
+};
 
 // Attach active month changer to global scope
 window.changeActiveMonth = changeActiveMonth;
