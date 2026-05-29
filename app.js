@@ -630,6 +630,10 @@ function parseGoogleSheetsData(valueRanges) {
     return { incomeMonthly, billDepositBiweekly, incomeBiweekly, personalCashBiweekly };
   };
 
+  const moneyInData = parseMoneyInTable(valueRanges[5] ? valueRanges[5].values : null);
+  console.log("DEBUG: Money In Table Raw Values:", valueRanges[5] ? valueRanges[5].values : null);
+  console.log("DEBUG: Parsed Money In Data:", moneyInData);
+  
   return {
     sheetName: state.activeMonth,
     utilities: parseGridTable(valueRanges[0] ? valueRanges[0].values : null),
@@ -638,7 +642,7 @@ function parseGoogleSheetsData(valueRanges) {
     transportation: parseGridTable(valueRanges[3] ? valueRanges[3].values : null),
     kylesZone: parseKylesZoneTable(valueRanges[4] ? valueRanges[4].values : null),
     otherExpenses: { items: [], total: 0 }, // Merged into kylesZone
-    moneyIn: parseMoneyInTable(valueRanges[5] ? valueRanges[5].values : null)
+    moneyIn: moneyInData
   };
 }
 
