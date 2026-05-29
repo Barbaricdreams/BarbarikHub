@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Budget Hub - Financial Overview Dashboard</title>
+  <!-- Beautiful SVG Emoji Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
   <!-- Tailwind Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -62,7 +64,7 @@
       <!-- Month Dropdown Selector -->
       <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl w-full md:w-auto">
         <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 pl-2">Active Month</span>
-        <select id="header-month-select" class="bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold rounded-xl px-4 py-2 border-none focus:outline-none cursor-pointer shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors" onchange="changeActiveMonth(this.value)">
+        <select id="header-month-select" aria-label="Select Active Month" class="bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold rounded-xl px-4 py-2 border-none focus:outline-none cursor-pointer shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors" onchange="changeActiveMonth(this.value)">
           <!-- Options populated dynamically -->
         </select>
       </div>
@@ -616,6 +618,6 @@
   </div>
 
   <!-- Core Javascript Logic (cache-busted) -->
-  <script src="app.js?v=f19a07"></script>
+  <script src="app.js?v=f19a08"></script>
 </body>
 </html>
