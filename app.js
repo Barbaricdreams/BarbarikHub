@@ -594,21 +594,26 @@ function parseGoogleSheetsData(valueRanges) {
     
     if (values && values.length > 0) {
       try {
+        console.log("DEBUG: parseMoneyInTable raw values:", JSON.stringify(values));
         for (let r = 1; r < values.length; r++) {
           const row = values[r];
           if (!row || row.length === 0) continue;
           const colL = String(row[0] || "").trim().toLowerCase();
+          console.log(`DEBUG: Row ${r}: colL="${colL}", full row:`, row);
           if (colL === "kyle" && r < 5) {
             incomeMonthly.kyle = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeMonthly.kyle;
             billDepositBiweekly.kyle = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.kyle;
+            console.log(`DEBUG: Kyle row - incomeMonthly=${incomeMonthly.kyle}, billDepositBiweekly=${billDepositBiweekly.kyle}`);
           }
           if (colL === "justine" && r < 5) {
             incomeMonthly.justine = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeMonthly.justine;
             billDepositBiweekly.justine = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.justine;
+            console.log(`DEBUG: Justine row - incomeMonthly=${incomeMonthly.justine}, billDepositBiweekly=${billDepositBiweekly.justine}`);
           }
           if (colL === "total" && r < 5) {
             incomeMonthly.total = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeMonthly.total;
             billDepositBiweekly.total = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.total;
+            console.log(`DEBUG: Total row - incomeMonthly=${incomeMonthly.total}, billDepositBiweekly=${billDepositBiweekly.total}`);
           }
           if (r === 5) {
             incomeBiweekly.kyle = Number(String(row[0] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.kyle;
@@ -624,9 +629,10 @@ function parseGoogleSheetsData(valueRanges) {
           }
         }
       } catch (e) {
-        // use fallbacks
+        console.error("ERROR in parseMoneyInTable:", e);
       }
     }
+    console.log("DEBUG: Final parseMoneyInTable result:", { incomeMonthly, billDepositBiweekly, incomeBiweekly, personalCashBiweekly });
     return { incomeMonthly, billDepositBiweekly, incomeBiweekly, personalCashBiweekly };
   };
 
