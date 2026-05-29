@@ -243,8 +243,26 @@ function changeActiveMonth(monthVal) {
 
 // Settings UI Management
 function loadSettingsUI() {
-  elements.sheetUrlInput.value = state.sheetUrl;
-  elements.googleClientIdInput.value = state.googleClientId;
+  // If this site is running on a public origin (e.g. GitHub Pages), do not
+  // pre-fill or expose the Sheet URL / OAuth Client ID in the UI. This prevents
+  // accidental leakage if a value was ever committed or persisted in that origin.
+  const hostname = window.location && window.location.hostname ? window.location.hostname : "";
+  const isPublicHost = hostname.endsWith("github.io") || (hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "::1" && hostname !== "");
+
+  if (isPublicHost) {
+    elements.sheetUrlInput.value = "";
+    elements.sheetUrlInput.placeholder = "Hidden on public site";
+    elements.sheetUrlInput.disabled = true;
+
+    elements.googleClientIdInput.value = "";
+    elements.googleClientIdInput.placeholder = "Hidden on public site";
+    elements.googleClientIdInput.disabled = true;
+  } else {
+    elements.sheetUrlInput.value = state.sheetUrl;
+    elements.googleClientIdInput.value = state.googleClientId;
+    elements.sheetUrlInput.disabled = false;
+    elements.googleClientIdInput.disabled = false;
+  }
   
   if (state.googleAccessToken) {
     elements.googleAuthStatus.innerText = "Status: Signed In";
@@ -302,12 +320,22 @@ function setupEventListeners() {
   });
   
   elements.settingsSaveBtn.addEventListener("click", () => {
+    // Prevent saving Sheet/OAuth settings from public hosts.
+    const hostname = window.location && window.location.hostname ? window.location.hostname : "";
+    const isPublicHost = hostname.endsWith("github.io") || (hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "::1" && hostname !== "");
+
+    if (isPublicHost) {
+      alert("⚠️ Settings are disabled on the public site for privacy. Configure locally.");
+      closeModal();
+      return;
+    }
+
     state.sheetUrl = elements.sheetUrlInput.value.trim();
     state.googleClientId = elements.googleClientIdInput.value.trim();
-    
+
     localStorage.setItem("budget_sheet_url", state.sheetUrl);
     localStorage.setItem("budget_google_client_id", state.googleClientId);
-    
+
     closeModal();
     loadMonthsDropdown().then(() => {
       fetchData();
@@ -703,7 +731,7 @@ function updateDashboardData() {
   elements.cardSafetySurplus.innerText = formatCurrency(safetySurplus);
   
   // Render Weeks 1-2 & Weeks 3-4 Logic Details (using actual individual deposit contributions)
-  elements.logicW12Income.innerText = formatCurrency(d.moneyIn.incomeBiweekly.kyle || 1500);
+  elements.logicW12Income.innerText = formatCurrency(d.moneyIn.incomeBiweekly.kyle || 0);
   elements.logicW12Deposit.innerText = `-${formatCurrencyPrecise(kyleBiweeklyDepositVal)}`;
   if (document.getElementById("logic-w12-zone")) {
     const kyleZoneBiweeklyVal = (d.kylesZone.total || 0) / 2;
@@ -711,7 +739,7 @@ function updateDashboardData() {
   }
   elements.logicW12Pocket.innerText = formatCurrencyPrecise(weeks12PocketCash);
   
-  elements.logicW34Income.innerText = formatCurrency(d.moneyIn.incomeBiweekly.justine || 900);
+  elements.logicW34Income.innerText = formatCurrency(d.moneyIn.incomeBiweekly.justine || 0);
   elements.logicW34Deposit.innerText = `-${formatCurrencyPrecise(justineBiweeklyDepositVal)}`;
   elements.logicW34Pocket.innerText = formatCurrency(weeks34PocketCash);
   
@@ -1099,9 +1127,9 @@ function renderMyZone() {
   
   const d = state.budgetData;
   
-  elements.myzoneTotal.innerText = formatCurrency(d.kylesZone.total || 234.00);
-  elements.myzoneBiweekly.innerText = formatCurrency((d.kylesZone.total || 234.00) / 2);
-  elements.myzoneOtherTotal.innerText = formatCurrency(d.otherExpenses.total || 70.00);
+  elements.myzoneTotal.innerText = formatCurrency(d.kylesZone.total || 0);
+  elements.myzoneBiweekly.innerText = formatCurrency((d.kylesZone.total || 0) / 2);
+  elements.myzoneOtherTotal.innerText = formatCurrency(d.otherExpenses.total || 0);
   
   // Kyle's Subscription table
   elements.myzoneBillsTbody.innerHTML = "";
