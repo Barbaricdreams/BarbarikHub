@@ -302,7 +302,10 @@ function setupEventListeners() {
   elements.settingsCancelBtn.addEventListener("click", closeModal);
   
   elements.googleSignInBtn.addEventListener("click", () => {
-    const clientId = elements.googleClientIdInput.value.trim();
+    // Allow sign-in when the input is disabled/hidden on public hosts by
+    // falling back to the value already stored in `state` (from localStorage).
+    const inputVal = (elements.googleClientIdInput && elements.googleClientIdInput.value) ? elements.googleClientIdInput.value.trim() : "";
+    const clientId = inputVal || state.googleClientId || "";
     if (!clientId) {
       alert("⚠️ Please enter your Google OAuth Client ID first!");
       return;
