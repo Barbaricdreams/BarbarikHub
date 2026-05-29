@@ -600,32 +600,33 @@ function parseGoogleSheetsData(valueRanges) {
           if (!row || row.length === 0) continue;
           const colL = String(row[0] || "").trim().toLowerCase();
           console.log(`DEBUG: Row ${r}: colL="${colL}", full row:`, row);
-          if (colL === "kyle" && r < 5) {
+          
+          // Money In table structure:
+          // Row 0: Headers
+          // Row 1: Kyle | Income-Monthly | Bill Deposit Biweekly | Income-Biweekly | Personal Cash Biweekly
+          // Row 2: Justine | ...
+          // Row 3: Total | ...
+          
+          if (colL === "kyle") {
             incomeMonthly.kyle = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeMonthly.kyle;
-            billDepositBiweekly.kyle = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.kyle;
-            console.log(`DEBUG: Kyle row - incomeMonthly=${incomeMonthly.kyle}, billDepositBiweekly=${billDepositBiweekly.kyle}`);
+            billDepositBiweekly.kyle = Number(String(row[2] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.kyle;
+            incomeBiweekly.kyle = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.kyle;
+            personalCashBiweekly.kyle = Number(String(row[4] || "").replace(/[^0-9.-]+/g,"")) || personalCashBiweekly.kyle;
+            console.log(`DEBUG: Kyle row - incomeMonthly=${incomeMonthly.kyle}, billDepositBiweekly=${billDepositBiweekly.kyle}, incomeBiweekly=${incomeBiweekly.kyle}, personalCash=${personalCashBiweekly.kyle}`);
           }
-          if (colL === "justine" && r < 5) {
+          if (colL === "justine") {
             incomeMonthly.justine = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeMonthly.justine;
-            billDepositBiweekly.justine = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.justine;
-            console.log(`DEBUG: Justine row - incomeMonthly=${incomeMonthly.justine}, billDepositBiweekly=${billDepositBiweekly.justine}`);
+            billDepositBiweekly.justine = Number(String(row[2] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.justine;
+            incomeBiweekly.justine = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.justine;
+            personalCashBiweekly.justine = Number(String(row[4] || "").replace(/[^0-9.-]+/g,"")) || personalCashBiweekly.justine;
+            console.log(`DEBUG: Justine row - incomeMonthly=${incomeMonthly.justine}, billDepositBiweekly=${billDepositBiweekly.justine}, incomeBiweekly=${incomeBiweekly.justine}, personalCash=${personalCashBiweekly.justine}`);
           }
-          if (colL === "total" && r < 5) {
+          if (colL === "total") {
             incomeMonthly.total = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeMonthly.total;
-            billDepositBiweekly.total = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.total;
-            console.log(`DEBUG: Total row - incomeMonthly=${incomeMonthly.total}, billDepositBiweekly=${billDepositBiweekly.total}`);
-          }
-          if (r === 5) {
-            incomeBiweekly.kyle = Number(String(row[0] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.kyle;
-            personalCashBiweekly.kyle = Number(String(row[2] || "").replace(/[^0-9.-]+/g,"")) || personalCashBiweekly.kyle;
-          }
-          if (r === 6) {
-            incomeBiweekly.justine = Number(String(row[0] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.justine;
-            personalCashBiweekly.justine = Number(String(row[2] || "").replace(/[^0-9.-]+/g,"")) || personalCashBiweekly.justine;
-          }
-          if (r === 7) {
-            incomeBiweekly.total = Number(String(row[1] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.total;
-            personalCashBiweekly.total = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || personalCashBiweekly.total;
+            billDepositBiweekly.total = Number(String(row[2] || "").replace(/[^0-9.-]+/g,"")) || billDepositBiweekly.total;
+            incomeBiweekly.total = Number(String(row[3] || "").replace(/[^0-9.-]+/g,"")) || incomeBiweekly.total;
+            personalCashBiweekly.total = Number(String(row[4] || "").replace(/[^0-9.-]+/g,"")) || personalCashBiweekly.total;
+            console.log(`DEBUG: Total row - incomeMonthly=${incomeMonthly.total}, billDepositBiweekly=${billDepositBiweekly.total}, incomeBiweekly=${incomeBiweekly.total}, personalCash=${personalCashBiweekly.total}`);
           }
         }
       } catch (e) {
