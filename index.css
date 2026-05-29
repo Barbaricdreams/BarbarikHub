@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --font-family: 'Outfit', sans-serif;
+  
+  /* Color Palette - Light Mode */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  
+  --color-primary: #5d5fef;
+  --color-primary-rgb: 93, 95, 239;
+  --color-primary-dark: #3f41b5;
+  --color-primary-light: #ececff;
+  
+  --color-green: #10b981;
+  --color-green-light: #d1fae5;
+  --color-green-rgb: 16, 185, 129;
+  
+  --color-dark-navy: #0d122b;
+  --color-dark-navy-rgb: 13, 18, 43;
+  
+  --color-pink: #ec4899;
+  --color-pink-light: #fce7f3;
+  
+  --color-red: #ef4444;
+  --color-red-light: #fee2e2;
+  
+  --color-teal: #06b6d4;
+  --color-teal-light: #ecfeff;
+  
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --card-hover-shadow: 0 20px 40px -10px rgba(93, 95, 239, 0.12), 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+  --border-color: #f1f5f9;
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --bg-primary: #0b0f19;
+  --bg-secondary: #131a2e;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  
+  --color-primary-light: #1e1b4b;
+  --color-green-light: #064e3b;
+  --color-pink-light: #500724;
+  --color-red-light: #450a0a;
+  --color-teal-light: #083344;
+  
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --card-hover-shadow: 0 25px 50px -12px rgba(93, 95, 239, 0.25);
+  --border-color: #1e293b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+html, body, header, nav, button, select, input, main, section, div, table, tr, td, th {
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Glassmorphism details */
+.glass {
+  background: rgba(var(--bg-secondary), 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Premium Card hover lift */
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* Specific Summary Card Background Gradients */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #131836 0%, #090b1c 100%);
+}
+
+[data-theme="dark"] .bg-gradient-dark {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Progress bar filling animation */
+.progress-bar-fill {
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pulse animation for synced badge */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+}
+
+.sync-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.25em;
+  height: 1.25em;
+  border: 2px solid var(--border-color);
+  border-radius: 0.25em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.custom-checkbox::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--color-primary);
+  transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.custom-checkbox:checked::before {
+  transform: scale(1);
+}
+
+.custom-checkbox:checked {
+  border-color: var(--color-primary);
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.glow-green {
+  box-shadow: 0 0 15px rgba(var(--color-green-rgb), 0.3);
+}
+
+/* Unified Glassmorphic Card System */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(241, 245, 249, 0.8);
+}
+
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(30, 41, 59, 0.6);
+}
+
+/* SVG Doughnut Chart Animation */
+@keyframes doughnutFill {
+  from { stroke-dashoffset: var(--circumference); }
+  to { stroke-dashoffset: var(--dash-offset); }
+}
+
+.doughnut-segment {
+  animation: doughnutFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: center;
+}
+
+/* Confetti Canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+}

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Hub - Financial Overview Dashboard</title>
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'selector',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#5d5fef',
+              primaryDark: '#3f41b5',
+              primaryLight: '#ececff',
+              green: '#10b981',
+              greenLight: '#d1fae5',
+              darkNavy: '#0d122b',
+              pink: '#ec4899',
+              red: '#ef4444',
+              teal: '#06b6d4',
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Sign-In SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Custom CSS Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#0b0f19] dark:text-slate-100">
+
+  <!-- Main Container -->
+  <div class="max-w-[1440px] mx-auto p-4 md:p-8 min-h-screen flex flex-col gap-6">
+
+    <!-- Header Section -->
+    <header class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md p-4 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-sm">
+      <!-- Logo & Sync Badge -->
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-brand-primary text-white rounded-2xl shadow-lg shadow-brand-primary/20">
+          <!-- Beautiful Wallet SVG Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-wider text-slate-800 dark:text-white uppercase">Budget Hub</h1>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-brand-green sync-pulse"></span>
+            <span id="sync-status" class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Live Budget Sync</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month Dropdown Selector -->
+      <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl w-full md:w-auto">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 pl-2">Active Month</span>
+        <select id="header-month-select" class="bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold rounded-xl px-4 py-2 border-none focus:outline-none cursor-pointer shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors" onchange="changeActiveMonth(this.value)">
+          <!-- Options populated dynamically -->
+        </select>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl w-full md:w-auto">
+        <button id="tab-overview" class="flex-1 md:flex-initial px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase transition-all duration-300 bg-white text-brand-primary shadow-sm dark:bg-slate-700 dark:text-white" onclick="switchTab('overview')">
+          Overview
+        </button>
+        <button id="tab-ledger" class="flex-1 md:flex-initial px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase transition-all duration-300 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" onclick="switchTab('ledger')">
+          Bill Ledger
+        </button>
+        <button id="tab-myzone" class="flex-1 md:flex-initial px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase transition-all duration-300 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" onclick="switchTab('myzone')">
+          My Zone
+        </button>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <!-- Refresh Button -->
+        <button id="refresh-btn" class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors" title="Sync Data Now">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button id="theme-toggle" class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors" title="Toggle Dark/Light Mode">
+          <!-- Sun Icon -->
+          <svg id="theme-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M9.75 15h.008v.008H9.75V15Zm0-6h.008v.008H9.75V9Zm6 6h.008v.008h-.008V15Zm0-6h.008v.008h-.008V9ZM3.75 12h2.25m13.5 0H21M5.75 5.75l1.59 1.59m11.32 11.32 1.59 1.59m-1.59-11.32-1.59 1.59M7.34 16.66l-1.59 1.59M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z" />
+          </svg>
+          <!-- Moon Icon -->
+          <svg id="theme-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+        </button>
+
+        <!-- Settings Cog -->
+        <button id="settings-btn" class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors" title="Google Sheet Integration Settings">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.594 3.94ZM12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- TAB 1: OVERVIEW -->
+    <main id="view-overview" class="flex flex-col gap-6">
+
+      <!-- Summary Cards Grid -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Card 1: Monthly Income -->
+        <div class="glass-card border-l-4 border-l-brand-primary rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-primary/5 dark:bg-brand-primary/10 group-hover:scale-125 transition-transform duration-500"></div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Monthly Income</h3>
+            <div id="card-monthly-income" class="text-4xl font-extrabold mt-3 tracking-tight text-slate-800 dark:text-white">$4,800</div>
+          </div>
+          <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 text-xs font-semibold text-slate-400 dark:text-slate-500">
+            <span class="flex items-center gap-1">
+              KYLE
+              <span id="label-kyle-monthly" class="font-bold text-brand-primary">$3,000</span>
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+            <span class="flex items-center gap-1">
+              JUSTINE
+              <span id="label-justine-monthly" class="font-bold text-brand-primary">$1,800</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 2: Biweekly Deposit -->
+        <div class="glass-card border-l-4 border-l-brand-teal rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-teal/5 dark:bg-brand-teal/10 group-hover:scale-125 transition-transform duration-500"></div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Biweekly Deposit</h3>
+            <div id="card-biweekly-deposit" class="text-4xl font-extrabold mt-3 tracking-tight text-slate-800 dark:text-white">$1,502.50</div>
+          </div>
+          <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 text-xs font-semibold text-slate-400 dark:text-slate-500">
+            <span class="flex items-center gap-1">
+              KYLE
+              <span id="label-kyle-biweekly-deposit" class="font-bold text-slate-700 dark:text-white">$1,202.50</span>
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+            <span class="flex items-center gap-1">
+              JUSTINE
+              <span id="label-justine-biweekly-deposit" class="font-bold text-slate-700 dark:text-white">$300.00</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 3: Pocket Cash -->
+        <div class="glass-card border-l-4 border-l-brand-green rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-green/5 dark:bg-brand-green/10 group-hover:scale-125 transition-transform duration-500"></div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Pocket Cash</h3>
+            <div id="card-pocket-cash" class="text-4xl font-extrabold mt-3 tracking-tight text-brand-green">$180.51</div>
+          </div>
+          <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 text-xs font-semibold text-slate-400 dark:text-slate-500">
+            <span class="flex items-center gap-1">
+              KYLE
+              <span id="label-kyle-pocket" class="font-bold text-brand-green">$180.51</span>
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+            <span class="flex items-center gap-1">
+              JUSTINE
+              <span id="label-justine-pocket" class="font-bold text-brand-green">$600.00</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 4: Safety Surplus -->
+        <div class="glass-card border-l-4 border-l-brand-pink rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-pink/5 dark:bg-brand-pink/10 group-hover:scale-125 transition-transform duration-500"></div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Safety Surplus</h3>
+            <div id="card-safety-surplus" class="text-4xl font-extrabold mt-3 tracking-tight text-slate-800 dark:text-white">$1,501</div>
+          </div>
+          <div class="flex items-center gap-3 border-t border-slate-100 dark:border-slate-800 pt-4 text-xs text-slate-400 dark:text-slate-500 font-medium">
+            <span class="p-1.5 bg-brand-pink/10 text-brand-pink rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+            </span>
+            <span>Final leftover monthly cushion</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Three Column Layout: Spending Profile, Cash Logic & Upcoming Bills -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Column 1: Spending Profile (Compact 1-column layout) -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+          <div>
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-extrabold tracking-tight">Spending Profile</h2>
+              <!-- Dynamic Clock/Calendar Indicator -->
+              <span class="p-2 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </span>
+            </div>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Allocation Across Bill Types</p>
+          </div>
+
+          <!-- Spending Profile Progress Bars -->
+          <div id="spending-profile-bars" class="flex flex-col gap-6 py-2">
+            <!-- Loading Skeleton -->
+            <div class="animate-pulse flex flex-col gap-2">
+              <div class="h-4 bg-slate-100 dark:bg-slate-800 w-1/4 rounded"></div>
+              <div class="h-8 bg-slate-100 dark:bg-slate-800 w-full rounded-full"></div>
+            </div>
+            <div class="animate-pulse flex flex-col gap-2">
+              <div class="h-4 bg-slate-100 dark:bg-slate-800 w-1/3 rounded"></div>
+              <div class="h-8 bg-slate-100 dark:bg-slate-800 w-full rounded-full"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Cash Logic -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+          <div>
+            <h2 class="text-xl font-extrabold tracking-tight">Cash Logic</h2>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Biweekly Payday Breakdowns</p>
+          </div>
+
+          <!-- Payday breakdown blocks -->
+          <div class="flex flex-col gap-6">
+
+            <!-- Weeks 1-2 Block -->
+            <div class="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-50 dark:border-slate-800/30 rounded-2xl p-5 relative overflow-hidden group">
+              <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">Biweekly</span>
+                <span class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-[10px] font-extrabold uppercase tracking-wider rounded-lg">Kyle's Payday</span>
+              </div>
+              <div class="flex flex-col gap-3">
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400 font-semibold">Kyle's Income</span>
+                  <span id="logic-w12-income" class="font-bold text-slate-700 dark:text-slate-200">$1,500</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400 font-semibold">Bill Deposit</span>
+                  <span id="logic-w12-deposit" class="font-bold text-slate-700 dark:text-slate-200">-$1,202.50</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400 font-semibold">Kyle's Zone</span>
+                  <span id="logic-w12-zone" class="font-bold text-slate-700 dark:text-slate-200">-$145.99</span>
+                </div>
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center mt-1">
+                  <span class="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400">Your Pocket Cash</span>
+                  <span id="logic-w12-pocket" class="text-xl font-extrabold text-brand-green">$151.51</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Weeks 3-4 Block -->
+            <div class="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-50 dark:border-slate-800/30 rounded-2xl p-5 relative overflow-hidden group">
+              <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">Biweekly</span>
+                <span class="px-2.5 py-1 bg-brand-pink/10 text-brand-pink text-[10px] font-extrabold uppercase tracking-wider rounded-lg">Justine's Payday</span>
+              </div>
+              <div class="flex flex-col gap-3">
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400 font-semibold">Justine's Income</span>
+                  <span id="logic-w34-income" class="font-bold text-slate-700 dark:text-slate-200">$900</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400 font-semibold">Bill Deposit</span>
+                  <span id="logic-w34-deposit" class="font-bold text-slate-700 dark:text-slate-200">-$300.00</span>
+                </div>
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center mt-1">
+                  <span class="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400">Your Pocket Cash</span>
+                  <span id="logic-w34-pocket" class="text-xl font-extrabold text-brand-green">$600</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column 3: Upcoming Bills -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+          <div>
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-extrabold tracking-tight">Upcoming Bills</h2>
+              <span class="p-2 bg-slate-50 dark:bg-slate-800 text-brand-red rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+              </span>
+            </div>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Unpaid Bills Due Soonest</p>
+          </div>
+
+          <div id="upcoming-bills-list" class="flex flex-col gap-4 flex-1">
+            <!-- Dynamically populated list -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- TAB 2: BILL LEDGER -->
+    <main id="view-ledger" class="hidden flex flex-col gap-6">
+      
+      <!-- Ledger Header Controls -->
+      <section class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-extrabold tracking-tight">Bill Ledger Center</h2>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Consolidated Active Bill Tracking</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Search Bar -->
+          <div class="relative w-full sm:w-64">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.636Z" />
+              </svg>
+            </span>
+            <input type="text" id="ledger-search" class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="Search bills...">
+          </div>
+
+          <!-- Category Filter -->
+          <select id="ledger-category-filter" class="px-4 py-2 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
+            <option value="all">All Categories</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Fun / Entertainment</option>
+            <option value="debt">Debt</option>
+            <option value="transportation">Cars / Transportation</option>
+          </select>
+
+          <!-- Add Bill Button -->
+          <button onclick="openAddBillModal()" class="px-5 py-2 text-sm font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 flex items-center gap-1.5 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Add Bill
+          </button>
+        </div>
+      </section>
+
+      <!-- Ledger Table -->
+      <section class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-100 dark:border-slate-800 text-xs uppercase font-extrabold tracking-wider text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-800/10 select-none">
+                <th onclick="toggleLedgerSort('name')" class="p-5 cursor-pointer hover:text-brand-primary transition-colors">
+                  <div class="flex items-center gap-1">
+                    Bill Name
+                    <span id="sort-icon-name" class="text-[9px]"></span>
+                  </div>
+                </th>
+                <th onclick="toggleLedgerSort('category')" class="p-5 cursor-pointer hover:text-brand-primary transition-colors">
+                  <div class="flex items-center gap-1">
+                    Category
+                    <span id="sort-icon-category" class="text-[9px]"></span>
+                  </div>
+                </th>
+                <th onclick="toggleLedgerSort('date')" class="p-5 cursor-pointer hover:text-brand-primary transition-colors">
+                  <div class="flex items-center gap-1">
+                    Due Date
+                    <span id="sort-icon-date" class="text-[9px]"></span>
+                  </div>
+                </th>
+                <th onclick="toggleLedgerSort('cost')" class="p-5 cursor-pointer hover:text-brand-primary transition-colors">
+                  <div class="flex items-center gap-1">
+                    Monthly Cost
+                    <span id="sort-icon-cost" class="text-[9px]"></span>
+                  </div>
+                </th>
+                <th onclick="toggleLedgerSort('paid')" class="p-5 text-center cursor-pointer hover:text-brand-primary transition-colors">
+                  <div class="flex items-center justify-center gap-1">
+                    Paid Status
+                    <span id="sort-icon-paid" class="text-[9px]"></span>
+                  </div>
+                </th>
+                <th class="p-5 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-tbody" class="divide-y divide-slate-50 dark:divide-slate-800/50 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TAB 3: MY ZONE -->
+    <main id="view-myzone" class="hidden flex flex-col gap-6">
+
+      <!-- Top Overview of Kyle's Zone -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Summary Cards specific to Kyle's zone -->
+        <div class="bg-gradient-primary p-6 rounded-3xl text-white shadow-xl shadow-brand-primary/10 flex flex-col justify-between h-[160px] relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-white/5 group-hover:scale-110 transition-transform"></div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-brand-primaryLight/80">Kyle's Zone Total</h3>
+            <div id="myzone-total" class="text-3xl font-extrabold mt-3">$234.00</div>
+          </div>
+          <p class="text-xs font-medium text-brand-primaryLight/90">Consolidated subscriptions & personal bills</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between h-[160px]">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Biweekly Personal</h3>
+            <div id="myzone-biweekly" class="text-3xl font-extrabold mt-3 text-slate-800 dark:text-white">$117.00</div>
+          </div>
+          <p class="text-xs font-medium text-slate-400 dark:text-slate-500">Calculated as Zone Total / 2</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between h-[160px]">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Other Expenses (Monthly)</h3>
+            <div id="myzone-other-total" class="text-3xl font-extrabold mt-3 text-slate-800 dark:text-white">$70.00</div>
+          </div>
+          <p class="text-xs font-medium text-slate-400 dark:text-slate-500">Ferret supplies, copays & other</p>
+        </div>
+
+      </section>
+
+      <!-- Full width layout: Kyle's Subscriptions & Installments Ledger -->
+      <section class="w-full">
+
+        <!-- Kyle's Subscriptions and Affirm Bills -->
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-4">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-extrabold tracking-tight">Kyle's Subscriptions & Ledger</h2>
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Active subscriptions, installment payment balances, and personal expenses</p>
+            </div>
+            <!-- Add Bill Button for Kyle's Zone -->
+            <button onclick="openAddBillModalForMyZone()" class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 flex items-center gap-1 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Add Bill
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm font-semibold">
+              <thead>
+                <tr class="border-b border-slate-100 dark:border-slate-800 text-xs uppercase font-extrabold tracking-wider text-slate-400 dark:text-slate-500 bg-slate-50/20 dark:bg-slate-800/5">
+                  <th class="py-3 px-2">Name</th>
+                  <th class="py-3 px-2 text-right">Cost</th>
+                  <th class="py-3 px-2 text-right">Loan Balance</th>
+                  <th class="py-3 px-2 text-right">Due Date</th>
+                  <th class="py-3 px-2 text-center">Paid</th>
+                  <th class="py-3 px-2 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="myzone-bills-tbody" class="divide-y divide-slate-50 dark:divide-slate-800/50 text-slate-700 dark:text-slate-300">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="mt-auto flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-6 text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider">
+      <span>May Hub Canvas App • Local Mode</span>
+      <span id="footer-sync-time">Last updated: Just now</span>
+    </footer>
+
+  </div>
+
+  <!-- Add/Edit Bill Modal (Slide-over/Modal Panel) -->
+  <div id="bill-modal" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="bill-modal-title" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-100 dark:border-slate-800">
+        
+        <!-- Header -->
+        <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <h2 id="bill-modal-title" class="text-lg font-extrabold tracking-tight">Add New Bill</h2>
+          <button onclick="closeBillModal()" class="p-1.5 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body / Form -->
+        <form id="bill-form" onsubmit="saveBillFormData(event)" class="p-6 flex-1 flex flex-col gap-5 overflow-y-auto">
+          <input type="hidden" id="bill-edit-original-name">
+          <input type="hidden" id="bill-edit-original-category">
+          
+          <div class="flex flex-col gap-2">
+            <label for="bill-name" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Bill Name</label>
+            <input type="text" id="bill-name" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. Electric, Netflix">
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="bill-category" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Category</label>
+            <select id="bill-category" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
+              <option value="utilities">Utilities</option>
+              <option value="entertainment">Fun / Entertainment</option>
+              <option value="debt">Debt</option>
+              <option value="transportation">Cars / Transportation</option>
+              <option value="kyleszone">Kyle's Zone</option>
+            </select>
+          </div>
+
+          <div id="bill-balance-group" class="flex flex-col gap-2 hidden">
+            <label for="bill-balance" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Loan Balance (Optional)</label>
+            <input type="text" id="bill-balance" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 4950.00 or -">
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="bill-cost" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Monthly Cost</label>
+            <input type="number" step="0.01" id="bill-cost" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 50.00">
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="bill-date" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Due Date</label>
+            <input type="text" id="bill-date" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 15th, N/A">
+          </div>
+
+          <div class="flex items-center gap-3 mt-2">
+            <input type="checkbox" id="bill-paid" class="custom-checkbox h-5 w-5">
+            <label for="bill-paid" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 cursor-pointer">Mark as Paid</label>
+          </div>
+          
+          <button type="submit" class="hidden" id="bill-form-submit-hidden"></button>
+        </form>
+
+        <!-- Footer -->
+        <div class="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3 bg-slate-50/50 dark:bg-slate-800/10">
+          <button onclick="closeBillModal()" class="px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-slate-700">Cancel</button>
+          <button onclick="document.getElementById('bill-form-submit-hidden').click()" class="px-6 py-2.5 text-xs font-extrabold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10">Save Bill</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Slide-over Panel (Modal Modal) -->
+  <div id="settings-modal" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-100 dark:border-slate-800">
+        
+        <!-- Header -->
+        <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <h2 class="text-lg font-extrabold tracking-tight">Sync Settings</h2>
+          <button id="settings-close-btn" class="p-1.5 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 flex-1 flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <label for="sheet-url" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Google Sheet URL or ID</label>
+            <input type="text" id="sheet-url" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
+            <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
+              Paste your Google Sheet URL here to enable direct, secure sync!
+            </p>
+
+            <label for="google-client-id" class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-4">Google OAuth Client ID</label>
+            <input type="text" id="google-client-id" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="1234567890-abc123xyz.apps.googleusercontent.com">
+            <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
+              Required to authorize secure queries to your private Google Sheet.
+            </p>
+
+            <div class="mt-4 border-t border-slate-100 dark:border-slate-850 pt-4 flex flex-col gap-3">
+              <label class="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Google Account Authorization</label>
+              <div class="flex items-center gap-3">
+                <button id="google-signin-btn" class="flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all shadow-sm">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Sign In with Google
+                </button>
+                <button id="google-signout-btn" class="hidden px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-brand-red hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all">
+                  Sign Out
+                </button>
+              </div>
+              <p id="google-auth-status" class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Status: Not Signed In</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3 bg-slate-50/50 dark:bg-slate-800/10">
+          <button id="settings-cancel-btn" class="px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-slate-700">Cancel</button>
+          <button id="settings-save-btn" class="px-6 py-2.5 text-xs font-extrabold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10">Save Connection</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Javascript Logic -->
+  <script src="app.js?v=1.4.3"></script>
+</body>
+</html>

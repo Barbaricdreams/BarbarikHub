@@ -1,0 +1,13 @@
+{
+  "name": "budget-canvas-dashboard",
+  "version": "1.0.0",
+  "description": "Premium local single-page visual canvas dashboard for budget tracking.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "author": "Antigravity Pair Programmer",
+  "license": "ISC",
+  "dependencies": {}
+}
