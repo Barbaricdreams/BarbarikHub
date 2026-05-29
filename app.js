@@ -667,8 +667,14 @@ function requestGoogleAuthToken(silent = false) {
       },
       error_callback: (err) => {
         console.error("Google Auth Error:", err);
+        const errorMsg = err?.error || String(err) || "Unknown error";
+        if (elements.syncStatus) {
+          elements.syncStatus.innerText = `Auth Error: ${errorMsg}`;
+          elements.syncStatus.className = "text-[10px] font-bold uppercase tracking-wider text-brand-red cursor-help";
+          elements.syncStatus.title = `Full error: ${JSON.stringify(err)}`;
+        }
         if (!silent) {
-          alert("⚠️ Google Authentication failed! Check your OAuth Client ID configuration.");
+          alert(`⚠️ Google Auth Failed: ${errorMsg}\n\nIf you see "origin_mismatch", add your GitHub Pages origin to Google Cloud Console OAuth client authorized origins.`);
         }
       }
     });
