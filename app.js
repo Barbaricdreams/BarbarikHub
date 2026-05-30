@@ -17,7 +17,9 @@ let state = {
   availableMonths: ["June '26", "May '26", "April '26"],
   activeTab: "overview",
   theme: localStorage.getItem("budget_theme") || "light",
-  paidStates: JSON.parse(localStorage.getItem("budget_paid_states")) || {}
+  paidStates: JSON.parse(localStorage.getItem("budget_paid_states")) || {},
+  myzoneSortColumn: localStorage.getItem("budget_myzone_sort_col") || "date",
+  myzoneSortOrder: localStorage.getItem("budget_myzone_sort_order") || "asc"
 };
 
 // DOM Elements
@@ -1205,7 +1207,36 @@ function renderMyZone() {
   elements.myzoneBillsTbody.innerHTML = "";
   const kyleItems = d.kylesZone.items || [];
   
-  kyleItems.forEach(item => {
+  // Sort Kyle's items
+  const sortedKyleItems = [...kyleItems];
+  if (state.myzoneSortColumn) {
+    sortedKyleItems.sort((a, b) => {
+      let valA = a[state.myzoneSortColumn];
+      let valB = b[state.myzoneSortColumn];
+      
+      if (state.myzoneSortColumn === "cost" || state.myzoneSortColumn === "debt") {
+        valA = Number(valA) || 0;
+        valB = Number(valB) || 0;
+      } else if (state.myzoneSortColumn === "date") {
+        const getDay = (str) => {
+          if (!str) return 999;
+          const parsed = parseInt(str.replace(/\D/g, ""), 10);
+          return isNaN(parsed) ? 999 : parsed;
+        };
+        valA = getDay(valA);
+        valB = getDay(valB);
+      } else {
+        valA = (valA || "").toString().toLowerCase();
+        valB = (valB || "").toString().toLowerCase();
+      }
+      
+      if (valA < valB) return state.myzoneSortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return state.myzoneSortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+  
+  sortedKyleItems.forEach(item => {
     const paidKey = `${state.activeMonth}:kyleszone:${item.name}`;
     const isPaid = state.paidStates[paidKey] !== undefined ? state.paidStates[paidKey] : (item.paid || false);
     
@@ -1244,7 +1275,7 @@ function renderMyZone() {
   });
   
   // Render Mobile Stacked Card List
-  renderMobileMyZone(kyleItems);
+  renderMobileMyZone(sortedKyleItems);
   
 }
 
@@ -1561,6 +1592,16 @@ window.toggleLedgerSortMobile = function(sortValue) {
   localStorage.setItem("budget_ledger_sort_col", state.sortColumn);
   localStorage.setItem("budget_ledger_sort_order", state.sortOrder);
   renderLedger();
+};
+
+window.toggleMyZoneSortMobile = function(sortValue) {
+  if (!sortValue) return;
+  const [colName, order] = sortValue.split("-");
+  state.myzoneSortColumn = colName;
+  state.myzoneSortOrder = order;
+  localStorage.setItem("budget_myzone_sort_col", state.myzoneSortColumn);
+  localStorage.setItem("budget_myzone_sort_order", state.myzoneSortOrder);
+  renderMyZone();
 };
 
 // Confetti Celebration System

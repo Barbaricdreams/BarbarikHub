@@ -35,7 +35,7 @@
   </script>
   <!-- Google Sign-In SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link rel="stylesheet" href="index.css?v=mobileUXpol3">
+  <link rel="stylesheet" href="index.css?v=myzoneSort1">
 </head>
 <body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#0b0f19] dark:text-slate-100">
 
@@ -487,6 +487,21 @@
           </div>
         </div>
 
+        <!-- Mobile My Zone Controls (hidden on desktop) -->
+        <div class="block md:hidden bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex items-center justify-between gap-3 mb-4">
+          <div class="text-sm font-extrabold tracking-tight text-slate-800 dark:text-slate-100">My Zone Bills</div>
+          <div class="flex items-center gap-3">
+            <!-- Sort Selector -->
+            <select id="myzone-sort-selector" onchange="toggleMyZoneSortMobile(this.value)" class="px-3 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer max-w-[160px]">
+              <option value="date-asc">Sort: Due Date</option>
+              <option value="name-asc">Sort: Name (A-Z)</option>
+              <option value="cost-desc">Sort: Cost (High-Low)</option>
+              <option value="cost-asc">Sort: Cost (Low-High)</option>
+              <option value="debt-desc">Sort: Balance (High-Low)</option>
+            </select>
+          </div>
+        </div>
+
         <!-- Mobile My Zone List (hidden on desktop) -->
         <div id="mobile-myzone-list" class="block md:hidden flex flex-col gap-4">
           <!-- Dynamically populated stacked card-list -->
@@ -677,6 +692,6 @@
   <div id="toast-container"></div>
 
   <!-- Core Javascript Logic (cache-busted) -->
-  <script src="app.js?v=mobileUXpol3"></script>
+  <script src="app.js?v=myzoneSort1"></script>
 </body>
 </html>
