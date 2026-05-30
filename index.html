@@ -336,7 +336,7 @@
 
           <div class="flex items-center gap-3 w-full sm:w-auto">
             <!-- Category Filter -->
-            <select id="ledger-category-filter" class="flex-1 sm:flex-initial px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
+            <select id="ledger-category-filter" class="flex-1 sm:flex-initial px-3 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
               <option value="all">All Categories</option>
               <option value="utilities">Utilities</option>
               <option value="entertainment">Fun / Entertainment</option>
@@ -344,8 +344,17 @@
               <option value="transportation">Cars / Transportation</option>
             </select>
 
-            <!-- Add Bill Button -->
-            <button onclick="openAddBillModal()" class="flex-1 sm:flex-initial px-5 py-2.5 text-sm font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 flex items-center justify-center gap-1.5 transition-all">
+            <!-- Sort Selector (Mobile friendly fintech sorting) -->
+            <select id="ledger-sort-selector" onchange="toggleLedgerSortMobile(this.value)" class="flex-1 sm:flex-initial px-3 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
+              <option value="date-asc">Sort: Due Date</option>
+              <option value="name-asc">Sort: Name (A-Z)</option>
+              <option value="cost-desc">Sort: Cost (High-Low)</option>
+              <option value="cost-asc">Sort: Cost (Low-High)</option>
+              <option value="paid-asc">Sort: Unpaid First</option>
+            </select>
+
+            <!-- Add Bill Button (Hidden on Mobile viewports because of the FAB) -->
+            <button onclick="openAddBillModal()" class="hidden sm:flex px-5 py-2.5 text-sm font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 items-center justify-center gap-1.5 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>

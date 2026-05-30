@@ -1553,6 +1553,16 @@ window.toggleLedgerSort = function(colName) {
   renderLedger();
 };
 
+window.toggleLedgerSortMobile = function(sortValue) {
+  if (!sortValue) return;
+  const [colName, order] = sortValue.split("-");
+  state.sortColumn = colName;
+  state.sortOrder = order;
+  localStorage.setItem("budget_ledger_sort_col", state.sortColumn);
+  localStorage.setItem("budget_ledger_sort_order", state.sortOrder);
+  renderLedger();
+};
+
 // Confetti Celebration System
 function launchConfetti() {
   // Remove any existing canvas
