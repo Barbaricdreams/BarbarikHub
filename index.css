@@ -9,48 +9,49 @@
   --text-primary: #0f172a;
   --text-secondary: #475569;
   
-  --color-primary: #5d5fef;
-  --color-primary-rgb: 93, 95, 239;
-  --color-primary-dark: #3f41b5;
-  --color-primary-light: #ececff;
+  --color-primary: #6366f1; /* Sophisticated Indigo */
+  --color-primary-rgb: 99, 102, 241;
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #e0e7ff;
   
-  --color-green: #10b981;
-  --color-green-light: #d1fae5;
+  --color-green: #10b981; /* Emerald Green */
+  --color-green-light: #ecfdf5;
   --color-green-rgb: 16, 185, 129;
   
-  --color-dark-navy: #0d122b;
-  --color-dark-navy-rgb: 13, 18, 43;
+  --color-dark-navy: #111827;
+  --color-dark-navy-rgb: 17, 24, 39;
   
-  --color-pink: #ec4899;
-  --color-pink-light: #fce7f3;
+  --color-pink: #f07167; /* Muted Coral */
+  --color-pink-light: #fff1f0;
   
-  --color-red: #ef4444;
-  --color-red-light: #fee2e2;
+  --color-red: #f43f5e; /* Coral Red */
+  --color-red-light: #fff1f2;
   
-  --color-teal: #06b6d4;
-  --color-teal-light: #ecfeff;
+  --color-teal: #0d9488; /* Sophisticated Muted Teal */
+  --color-teal-light: #f0fdfa;
   
-  --card-shadow: 0 12px 40px -10px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.02);
-  --card-hover-shadow: 0 20px 48px -8px rgba(93, 95, 239, 0.12), 0 10px 20px -5px rgba(15, 23, 42, 0.04);
-  --border-color: rgba(226, 232, 240, 0.7);
+  /* Soft borders & subtle diffused shadows */
+  --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03), 0 12px 40px -8px rgba(15, 23, 42, 0.04);
+  --card-hover-shadow: 0 8px 30px -4px rgba(99, 102, 241, 0.08), 0 20px 48px -6px rgba(15, 23, 42, 0.05);
+  --border-color: rgba(226, 232, 240, 0.6);
 }
 
 /* Dark Mode Overrides */
-[data-theme="dark"] {
-  --bg-primary: #0b0f19;
-  --bg-secondary: #131a2e;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+.dark, [data-theme="dark"] {
+  --bg-primary: #111827; /* Softer, unified dark slate gray */
+  --bg-secondary: #1f2937; /* Slightly lighter surface/card color */
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
   
-  --color-primary-light: #1e1b4b;
+  --color-primary-light: #312e81; /* Muted dark indigo */
   --color-green-light: #064e3b;
-  --color-pink-light: #500724;
-  --color-red-light: #450a0a;
-  --color-teal-light: #083344;
+  --color-pink-light: #4c0519;
+  --color-red-light: #4c0519;
+  --color-teal-light: #115e59;
   
-  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  --card-hover-shadow: 0 25px 50px -12px rgba(93, 95, 239, 0.25);
-  --border-color: #1e293b;
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15), 0 12px 40px -8px rgba(0, 0, 0, 0.2);
+  --card-hover-shadow: 0 8px 30px -4px rgba(99, 102, 241, 0.15), 0 20px 48px -6px rgba(0, 0, 0, 0.25);
+  --border-color: rgba(55, 65, 81, 0.4); /* Soft border */
 }
 
 * {
@@ -82,7 +83,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(93, 95, 239, 0.15);
+  background: rgba(var(--color-primary-rgb), 0.15);
   border-radius: 99px;
   border: 3px solid transparent;
   background-clip: padding-box;
@@ -90,7 +91,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(93, 95, 239, 0.45);
+  background: rgba(var(--color-primary-rgb), 0.45);
   border: 3px solid transparent;
   background-clip: padding-box;
 }
@@ -195,8 +196,8 @@ body {
 }
 
 .dark .glass-card, [data-theme="dark"] .glass-card {
-  background: rgba(19, 26, 46, 0.85);
-  border-color: rgba(30, 41, 59, 0.6);
+  background: rgba(31, 41, 55, 0.85); /* Matches --bg-secondary */
+  border-color: var(--border-color);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -210,6 +211,13 @@ body {
 .doughnut-segment {
   animation: doughnutFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   transform-origin: center;
+  transition: stroke-width 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.doughnut-segment:hover {
+  stroke-width: 25;
+  opacity: 0.9;
 }
 
 /* Confetti Canvas */
@@ -288,25 +296,37 @@ body {
 }
 
 .status-pill-paid {
-  background-color: rgba(16, 185, 129, 0.1);
+  background-color: transparent;
   color: #10b981;
-  border-color: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
 }
 
 .status-pill-paid:hover {
-  background-color: #10b981;
-  color: white;
+  background-color: rgba(16, 185, 129, 0.08);
+  color: #10b981;
 }
 
 .status-pill-due {
-  background-color: rgba(245, 158, 11, 0.1);
+  background-color: transparent;
   color: #f59e0b;
-  border-color: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .status-pill-due:hover {
-  background-color: #f59e0b;
-  color: white;
+  background-color: rgba(245, 158, 11, 0.08);
+  color: #f59e0b;
+}
+
+.ledger-row {
+  transition: all 0.2s ease;
+}
+
+.ledger-row:hover {
+  background-color: rgba(99, 102, 241, 0.04) !important;
+}
+
+[data-theme="dark"] .ledger-row:hover {
+  background-color: rgba(99, 102, 241, 0.07) !important;
 }
 
 /* Premium Mobile responsive design overrides */

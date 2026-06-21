@@ -119,10 +119,12 @@ function init() {
 function setupTheme() {
   if (state.theme === "dark") {
     document.documentElement.classList.add("dark");
+    document.documentElement.setAttribute("data-theme", "dark");
     elements.themeSun.classList.remove("hidden");
     elements.themeMoon.classList.add("hidden");
   } else {
     document.documentElement.classList.remove("dark");
+    document.documentElement.setAttribute("data-theme", "light");
     elements.themeSun.classList.add("hidden");
     elements.themeMoon.classList.remove("hidden");
   }
@@ -402,6 +404,7 @@ async function fetchData() {
     elements.syncStatus.innerText = "Setup Required";
     elements.syncStatus.className = "text-xs font-semibold uppercase tracking-wider text-amber-500 cursor-pointer hover:underline font-bold";
     elements.syncStatus.title = "Click Settings Cog to enter your Google Sheet URL";
+    showUnsyncedState();
     return;
   }
   
@@ -409,6 +412,7 @@ async function fetchData() {
     elements.syncStatus.innerText = "Authorize Sync";
     elements.syncStatus.className = "text-xs font-semibold uppercase tracking-wider text-amber-500 cursor-pointer hover:underline font-bold";
     elements.syncStatus.title = "Click Settings Cog to authenticate with your Google account";
+    showUnsyncedState();
     return;
   }
 
@@ -435,6 +439,7 @@ async function fetchData() {
       state.googleAccessToken = "";
       sessionStorage.removeItem("budget_google_access_token");
       loadSettingsUI();
+      showUnsyncedState();
       if (state.googleClientId) {
         requestGoogleAuthToken(true);
       }
@@ -745,11 +750,72 @@ function requestGoogleAuthToken(silent = false) {
   }
 }
 
+// Show Unsynced State (Reset summary cards & restore skeletons)
+function showUnsyncedState() {
+  state.budgetData = null;
+  
+  // Toggle cash logic containers
+  const cashLogicContent = document.getElementById("cash-logic-content");
+  const cashLogicSkeleton = document.getElementById("cash-logic-skeleton");
+  if (cashLogicContent) cashLogicContent.classList.add("hidden");
+  if (cashLogicSkeleton) cashLogicSkeleton.classList.remove("hidden");
+
+  // Restore Spending Profile Skeleton
+  const spendingProfileBars = document.getElementById("spending-profile-bars");
+  if (spendingProfileBars) {
+    spendingProfileBars.innerHTML = `
+      <!-- Loading Skeleton -->
+      <div class="animate-pulse flex flex-col gap-2">
+        <div class="h-4 bg-slate-100 dark:bg-slate-800 w-1/4 rounded"></div>
+        <div class="h-8 bg-slate-100 dark:bg-slate-800 w-full rounded-full"></div>
+      </div>
+      <div class="animate-pulse flex flex-col gap-2">
+        <div class="h-4 bg-slate-100 dark:bg-slate-800 w-1/3 rounded"></div>
+        <div class="h-8 bg-slate-100 dark:bg-slate-800 w-full rounded-full"></div>
+      </div>
+    `;
+  }
+
+  // Clear Upcoming Bills
+  if (elements.upcomingBillsList) {
+    elements.upcomingBillsList.innerHTML = "";
+  }
+
+  // Reset core cards
+  if (elements.cardMonthlyIncome) elements.cardMonthlyIncome.innerText = "$0.00";
+  if (elements.labelKyleMonthly) elements.labelKyleMonthly.innerText = "$0.00";
+  if (elements.labelJustineMonthly) elements.labelJustineMonthly.innerText = "$0.00";
+
+  if (elements.cardBiweeklyDeposit) elements.cardBiweeklyDeposit.innerText = "$0.00";
+  if (document.getElementById("label-kyle-biweekly-deposit")) {
+    document.getElementById("label-kyle-biweekly-deposit").innerText = "$0.00";
+  }
+  if (document.getElementById("label-justine-biweekly-deposit")) {
+    document.getElementById("label-justine-biweekly-deposit").innerText = "$0.00";
+  }
+
+  if (elements.cardPocketCash) elements.cardPocketCash.innerText = "$0.00";
+  if (document.getElementById("label-kyle-pocket")) {
+    document.getElementById("label-kyle-pocket").innerText = "$0.00";
+  }
+  if (document.getElementById("label-justine-pocket")) {
+    document.getElementById("label-justine-pocket").innerText = "$0.00";
+  }
+
+  if (elements.cardSafetySurplus) elements.cardSafetySurplus.innerText = "$0.00";
+}
+
 // Recalculate Core Formulas & Update UI
 function updateDashboardData() {
   if (!state.budgetData) return;
   
   const d = state.budgetData;
+
+  // Toggle Cash Logic containers to show data and hide skeleton
+  const cashLogicContent = document.getElementById("cash-logic-content");
+  const cashLogicSkeleton = document.getElementById("cash-logic-skeleton");
+  if (cashLogicContent) cashLogicContent.classList.remove("hidden");
+  if (cashLogicSkeleton) cashLogicSkeleton.classList.add("hidden");
 
   const utilitiesTotal = calculateCategorySum(d.utilities.items);
   const entertainmentTotal = calculateCategorySum(d.entertainment.items);
@@ -902,16 +968,36 @@ function updateDashboardData() {
   checkAndCelebrateAllPaid();
 }
 
+window.hoverDoughnutSegment = function(name, costFormatted, pct) {
+  const valueEl = document.getElementById("doughnut-center-value");
+  const labelEl = document.getElementById("doughnut-center-label");
+  if (valueEl && labelEl) {
+    valueEl.innerText = costFormatted;
+    labelEl.innerText = `${name} (${pct}%)`;
+    labelEl.className = "text-[10px] font-bold uppercase tracking-widest text-brand-primary mt-0.5";
+  }
+};
+
+window.leaveDoughnutSegment = function(totalBillsFormatted) {
+  const valueEl = document.getElementById("doughnut-center-value");
+  const labelEl = document.getElementById("doughnut-center-label");
+  if (valueEl && labelEl) {
+    valueEl.innerText = totalBillsFormatted;
+    labelEl.innerText = "Total";
+    labelEl.className = "text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-0.5";
+  }
+};
+
 // Render Spending Profile as SVG Doughnut Chart
 function renderSpendingProfile(utilities, entertainment, debt, transportation) {
   const container = document.getElementById("spending-profile-bars");
   if (!container) return;
   
   const categories = [
-    { name: "Utilities", value: utilities, color: "#5d5fef" },
-    { name: "Fun", value: entertainment, color: "#ec4899" },
-    { name: "Debt", value: debt, color: "#ef4444" },
-    { name: "Transportation", value: transportation, color: "#06b6d4" }
+    { name: "Utilities", value: utilities, color: "#6366f1" },
+    { name: "Fun", value: entertainment, color: "#f07167" },
+    { name: "Debt", value: debt, color: "#f43f5e" },
+    { name: "Transportation", value: transportation, color: "#0d9488" }
   ];
   
   const totalBills = categories.reduce((s, c) => s + c.value, 0) || 1;
@@ -945,12 +1031,15 @@ function renderSpendingProfile(utilities, entertainment, debt, transportation) {
             stroke="${seg.color}" stroke-width="${strokeWidth}"
             stroke-dasharray="${seg.segLen} ${circumference - seg.segLen}"
             stroke-dashoffset="${seg.offset}"
+            class="doughnut-segment"
+            onmouseover="hoverDoughnutSegment('${seg.name}', '${formatCurrency(seg.value).replace(/'/g, "\\'")}', ${Math.round(seg.pct * 100)})"
+            onmouseout="leaveDoughnutSegment('${formatCurrency(totalBills).replace(/'/g, "\\'")}')"
           />
           `).join("")}
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div class="text-xl font-extrabold text-slate-800 dark:text-white tracking-tight">${formatCurrency(totalBills)}</div>
-          <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-0.5">Total</div>
+          <div id="doughnut-center-value" class="text-xl font-bold text-slate-800 dark:text-white tracking-tight">${formatCurrency(totalBills)}</div>
+          <div id="doughnut-center-label" class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-0.5">Total</div>
         </div>
       </div>
       
@@ -1081,7 +1170,7 @@ function renderLedger() {
   
   allFilteredItems.forEach(item => {
     const tr = document.createElement("tr");
-    tr.className = "border-b border-slate-50 dark:border-slate-800/40 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all";
+    tr.className = "border-b border-slate-100 dark:border-slate-800/20 ledger-row transition-all duration-200";
     
     const dateLabel = item.date && item.date !== "N/A" ? item.date : "Monthly";
     const cat = item.category;
@@ -1274,7 +1363,7 @@ function renderMyZone() {
     const isPaid = state.paidStates[paidKey] !== undefined ? state.paidStates[paidKey] : (item.paid || false);
     
     const tr = document.createElement("tr");
-    tr.className = "border-b border-slate-50 dark:border-slate-800/40 hover:bg-slate-50/50 dark:hover:bg-slate-800/10";
+    tr.className = "border-b border-slate-100 dark:border-slate-800/20 ledger-row transition-all duration-200";
     
     const debtLabel = item.debt && item.debt !== "-" ? formatCurrency(item.debt) : "-";
     const dateLabel = item.date || "N/A";
@@ -1663,7 +1752,7 @@ function launchConfetti() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   
-  const brandColors = ["#5d5fef", "#ec4899", "#10b981", "#06b6d4", "#ef4444", "#f59e0b", "#8b5cf6"];
+  const brandColors = ["#6366f1", "#f07167", "#10b981", "#0d9488", "#f43f5e", "#f59e0b", "#8b5cf6"];
   const particles = [];
   const particleCount = 120;
   

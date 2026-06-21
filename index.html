@@ -18,17 +18,29 @@
       theme: {
         extend: {
           colors: {
+            slate: {
+              100: '#e2e8f080', // Softened border light mode
+              800: '#37415166', // Softened border dark mode
+              900: '#1f2937', // Slightly lighter surface color (card bg)
+              950: '#111827', // Softer unified dark slate gray (body bg)
+            },
             brand: {
-              primary: '#5d5fef',
-              primaryDark: '#3f41b5',
-              primaryLight: '#ececff',
-              green: '#10b981',
-              greenLight: '#d1fae5',
-              darkNavy: '#0d122b',
-              pink: '#ec4899',
-              red: '#ef4444',
-              teal: '#06b6d4',
+              primary: '#6366f1', // Tailored Indigo
+              primaryDark: '#4f46e5',
+              primaryLight: '#e0e7ff',
+              green: '#10b981', // Soft Emerald Green
+              greenLight: '#ecfdf5',
+              darkNavy: '#111827',
+              pink: '#f07167', // Muted Coral
+              red: '#f43f5e',  // Muted Coral / Red
+              teal: '#0d9488', // Muted Teal
             }
+          },
+          boxShadow: {
+            sm: '0 4px 20px -2px rgba(15, 23, 42, 0.03), 0 12px 40px -8px rgba(15, 23, 42, 0.04)',
+            md: '0 8px 30px -4px rgba(99, 102, 241, 0.08), 0 20px 48px -6px rgba(15, 23, 42, 0.05)',
+            lg: '0 10px 30px rgba(0, 0, 0, 0.03)',
+            xl: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
           },
           fontFamily: {
             sans: ['Outfit', 'sans-serif'],
@@ -41,7 +53,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="stylesheet" href="index.css?v=barbarikTitle1">
 </head>
-<body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#0b0f19] dark:text-slate-100">
+<body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
 
   <!-- Main Container -->
   <div class="max-w-[1440px] mx-auto p-3 md:p-8 min-h-screen flex flex-col gap-4 md:gap-6">    <!-- Header Section -->
@@ -75,7 +87,7 @@
           <button id="theme-toggle" class="p-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl border border-slate-100/50 dark:border-slate-800/40 text-slate-500 dark:text-slate-400 transition-colors" title="Toggle Dark/Light Mode">
             <!-- Sun Icon -->
             <svg id="theme-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 hidden">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M9.75 15h.008v.008H9.75V15Zm0-6h.008v.008H9.75V9Zm6 6h.008v.008h-.008V15Zm0-6h.008v.008h-.008V9ZM3.75 12h2.25m13.5 0H21M5.75 5.75l1.59 1.59m11.32 11.32 1.59 1.59m-1.59-11.32-1.59 1.59M7.34 16.66l-1.59 1.59M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
             </svg>
             <!-- Moon Icon -->
             <svg id="theme-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -121,11 +133,11 @@
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         <!-- Card 1: Monthly Income -->
-        <div class="glass-card border-l-4 border-l-brand-primary rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+        <div class="glass-card border-l-4 border-l-brand-primary rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[200px] card-hover relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-primary/5 dark:bg-brand-primary/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Monthly Income</h3>
-            <div id="card-monthly-income" class="text-4xl font-extrabold mt-3 tracking-tight text-slate-800 dark:text-white">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Monthly Income</h3>
+            <div id="card-monthly-income" class="text-4xl font-bold mt-3 tracking-tight text-slate-800 dark:text-white">$0.00</div>
           </div>
           <div class="flex items-center justify-between border-t border-slate-100/80 dark:border-slate-800/20 pt-3 text-[11px] font-medium text-slate-400 dark:text-slate-500 select-none">
             <span class="flex items-center gap-1.5">
@@ -141,11 +153,11 @@
         </div>
 
         <!-- Card 2: Biweekly Deposit -->
-        <div class="glass-card border-l-4 border-l-brand-teal rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+        <div class="glass-card border-l-4 border-l-brand-teal rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[200px] card-hover relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-teal/5 dark:bg-brand-teal/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Biweekly Deposit</h3>
-            <div id="card-biweekly-deposit" class="text-4xl font-extrabold mt-3 tracking-tight text-slate-800 dark:text-white">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Biweekly Deposit</h3>
+            <div id="card-biweekly-deposit" class="text-4xl font-bold mt-3 tracking-tight text-slate-800 dark:text-white">$0.00</div>
           </div>
           <div class="flex items-center justify-between border-t border-slate-100/80 dark:border-slate-800/20 pt-3 text-[11px] font-medium text-slate-400 dark:text-slate-500 select-none">
             <span class="flex items-center gap-1.5">
@@ -161,11 +173,11 @@
         </div>
 
         <!-- Card 3: Pocket Cash -->
-        <div class="glass-card border-l-4 border-l-brand-green rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+        <div class="glass-card border-l-4 border-l-brand-green rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[200px] card-hover relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-green/5 dark:bg-brand-green/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Pocket Cash</h3>
-            <div id="card-pocket-cash" class="text-4xl font-extrabold mt-3 tracking-tight text-brand-green">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Pocket Cash</h3>
+            <div id="card-pocket-cash" class="text-4xl font-bold mt-3 tracking-tight text-brand-green">$0.00</div>
           </div>
           <div class="flex items-center justify-between border-t border-slate-100/80 dark:border-slate-800/20 pt-3 text-[11px] font-medium text-slate-400 dark:text-slate-500 select-none">
             <span class="flex items-center gap-1.5">
@@ -181,11 +193,11 @@
         </div>
 
         <!-- Card 4: Safety Surplus -->
-        <div class="glass-card border-l-4 border-l-brand-pink rounded-3xl p-6 shadow-sm flex flex-col justify-between h-[180px] card-hover relative overflow-hidden group">
+        <div class="glass-card border-l-4 border-l-brand-pink rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[200px] card-hover relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-brand-pink/5 dark:bg-brand-pink/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Safety Surplus</h3>
-            <div id="card-safety-surplus" class="text-4xl font-extrabold mt-3 tracking-tight text-slate-800 dark:text-white">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Safety Surplus</h3>
+            <div id="card-safety-surplus" class="text-4xl font-bold mt-3 tracking-tight text-slate-800 dark:text-white">$0.00</div>
           </div>
           <div class="flex items-center gap-3 border-t border-slate-100 dark:border-slate-800 pt-4 text-xs text-slate-400 dark:text-slate-500 font-medium">
             <span class="p-1.5 bg-brand-pink/10 text-brand-pink rounded-lg">
@@ -203,10 +215,10 @@
       <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <!-- Column 1: Spending Profile (Compact 1-column layout) -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
           <div>
             <div class="flex items-center justify-between">
-              <h2 class="text-xl font-extrabold tracking-tight">Spending Profile</h2>
+              <h2 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Spending Profile</h2>
               <!-- Dynamic Clock/Calendar Indicator -->
               <span class="p-2 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -214,7 +226,7 @@
                 </svg>
               </span>
             </div>
-            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Allocation Across Bill Types</p>
+            <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400/80 dark:text-slate-500/70 mt-1">Allocation Across Bill Types</p>
           </div>
 
           <!-- Spending Profile Progress Bars -->
@@ -232,37 +244,63 @@
         </div>
 
         <!-- Column 2: Cash Logic -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
           <div>
-            <h2 class="text-xl font-extrabold tracking-tight">Cash Logic</h2>
-            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Biweekly Payday Breakdowns</p>
+            <h2 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Cash Logic</h2>
+            <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400/80 dark:text-slate-500/70 mt-1">Biweekly Payday Breakdowns</p>
           </div>
 
           <!-- Payday breakdown blocks -->
-          <div class="flex flex-col gap-6">
+          <!-- Loading Skeleton -->
+          <div id="cash-logic-skeleton" class="flex flex-col gap-6 w-full py-2">
+            <div class="animate-pulse flex flex-col gap-4 bg-slate-50/50 dark:bg-slate-800/10 border border-slate-50 dark:border-slate-800/20 rounded-2xl p-5">
+              <div class="flex justify-between items-center">
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-1/4 rounded"></div>
+                <div class="h-6 bg-slate-100 dark:bg-slate-800 w-1/3 rounded-lg"></div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-full rounded"></div>
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-5/6 rounded"></div>
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-full rounded"></div>
+              </div>
+            </div>
+            <div class="animate-pulse flex flex-col gap-4 bg-slate-50/50 dark:bg-slate-800/10 border border-slate-50 dark:border-slate-800/20 rounded-2xl p-5">
+              <div class="flex justify-between items-center">
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-1/4 rounded"></div>
+                <div class="h-6 bg-slate-100 dark:bg-slate-800 w-1/3 rounded-lg"></div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-full rounded"></div>
+                <div class="h-4 bg-slate-100 dark:bg-slate-800 w-5/6 rounded"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actual content (hidden until synced) -->
+          <div id="cash-logic-content" class="flex flex-col gap-6 hidden">
 
             <!-- Weeks 1-2 Block -->
             <div class="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-50 dark:border-slate-800/30 rounded-2xl p-5 relative overflow-hidden group">
               <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">Biweekly</span>
-                <span class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-[10px] font-extrabold uppercase tracking-wider rounded-lg">Kyle's Payday</span>
+                <span class="text-[10px] font-medium uppercase tracking-widest text-brand-primary/80">Biweekly</span>
+                <span class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-wider rounded-lg">Kyle's Payday</span>
               </div>
-              <div class="flex flex-col gap-3">
-                <div class="flex justify-between text-sm">
+              <div class="flex flex-col gap-4">
+                <div class="flex justify-between text-sm py-0.5 leading-relaxed">
                   <span class="text-slate-400 font-semibold">Kyle's Income</span>
                   <span id="logic-w12-income" class="font-bold text-slate-700 dark:text-slate-200">$0.00</span>
                 </div>
-                <div class="flex justify-between text-sm">
+                <div class="flex justify-between text-sm py-0.5 leading-relaxed">
                   <span class="text-slate-400 font-semibold">Bill Deposit</span>
                   <span id="logic-w12-deposit" class="font-bold text-slate-700 dark:text-slate-200">-$0.00</span>
                 </div>
-                <div class="flex justify-between text-sm">
+                <div class="flex justify-between text-sm py-0.5 leading-relaxed">
                   <span class="text-slate-400 font-semibold">Kyle's Zone</span>
                   <span id="logic-w12-zone" class="font-bold text-slate-700 dark:text-slate-200">-$0.00</span>
                 </div>
-                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center mt-1">
-                  <span class="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400">Your Pocket Cash</span>
-                  <span id="logic-w12-pocket" class="text-xl font-extrabold text-brand-green">$0.00</span>
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-4 flex justify-between items-center mt-2">
+                  <span class="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Your Pocket Cash</span>
+                  <span id="logic-w12-pocket" class="text-xl font-bold text-brand-green">$0.00</span>
                 </div>
               </div>
             </div>
@@ -270,21 +308,21 @@
             <!-- Weeks 3-4 Block -->
             <div class="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-50 dark:border-slate-800/30 rounded-2xl p-5 relative overflow-hidden group">
               <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">Biweekly</span>
-                <span class="px-2.5 py-1 bg-brand-pink/10 text-brand-pink text-[10px] font-extrabold uppercase tracking-wider rounded-lg">Justine's Payday</span>
+                <span class="text-[10px] font-medium uppercase tracking-widest text-brand-primary/80">Biweekly</span>
+                <span class="px-2.5 py-1 bg-brand-pink/10 text-brand-pink text-[10px] font-bold uppercase tracking-wider rounded-lg">Justine's Payday</span>
               </div>
-              <div class="flex flex-col gap-3">
-                <div class="flex justify-between text-sm">
+              <div class="flex flex-col gap-4">
+                <div class="flex justify-between text-sm py-0.5 leading-relaxed">
                   <span class="text-slate-400 font-semibold">Justine's Income</span>
                   <span id="logic-w34-income" class="font-bold text-slate-700 dark:text-slate-200">$0.00</span>
                 </div>
-                <div class="flex justify-between text-sm">
+                <div class="flex justify-between text-sm py-0.5 leading-relaxed">
                   <span class="text-slate-400 font-semibold">Bill Deposit</span>
                   <span id="logic-w34-deposit" class="font-bold text-slate-700 dark:text-slate-200">-$0.00</span>
                 </div>
-                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center mt-1">
-                  <span class="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400">Your Pocket Cash</span>
-                  <span id="logic-w34-pocket" class="text-xl font-extrabold text-brand-green">$0.00</span>
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-4 flex justify-between items-center mt-2">
+                  <span class="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Your Pocket Cash</span>
+                  <span id="logic-w34-pocket" class="text-xl font-bold text-brand-green">$0.00</span>
                 </div>
               </div>
             </div>
@@ -293,17 +331,17 @@
         </div>
 
         <!-- Column 3: Upcoming Bills -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
           <div>
             <div class="flex items-center justify-between">
-              <h2 class="text-xl font-extrabold tracking-tight">Upcoming Bills</h2>
+              <h2 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Upcoming Bills</h2>
               <span class="p-2 bg-slate-50 dark:bg-slate-800 text-brand-red rounded-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                 </svg>
               </span>
             </div>
-            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Unpaid Bills Due Soonest</p>
+            <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400/80 dark:text-slate-500/70 mt-1">Unpaid Bills Due Soonest</p>
           </div>
 
           <div id="upcoming-bills-list" class="flex flex-col gap-4 flex-1">
@@ -319,10 +357,10 @@
     <main id="view-ledger" class="hidden flex flex-col gap-6">
       
       <!-- Ledger Header Controls -->
-      <section class="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <section class="bg-white dark:bg-slate-900 p-5 md:p-8 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 class="text-xl font-extrabold tracking-tight">Bill Ledger Center</h2>
-          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Consolidated Active Bill Tracking</p>
+          <h2 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Bill Ledger Center</h2>
+          <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400/80 dark:text-slate-500/70 mt-1">Consolidated Active Bill Tracking</p>
         </div>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
@@ -426,29 +464,31 @@
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         <!-- Summary Cards specific to Kyle's zone -->
-        <div class="bg-gradient-primary p-6 rounded-3xl text-white shadow-xl shadow-brand-primary/10 flex flex-col justify-between h-[160px] relative overflow-hidden group">
-          <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-white/5 group-hover:scale-110 transition-transform"></div>
+        <div class="glass-card border-l-4 border-l-brand-primary rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-brand-primary/5 dark:bg-brand-primary/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-brand-primaryLight/80">Kyle's Zone Total</h3>
-            <div id="myzone-total" class="text-3xl font-extrabold mt-3">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Kyle's Zone Total</h3>
+            <div id="myzone-total" class="text-3xl font-bold mt-3 text-slate-800 dark:text-white">$0.00</div>
           </div>
-          <p class="text-xs font-medium text-brand-primaryLight/90">Consolidated subscriptions & personal bills</p>
+          <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 select-none">Consolidated subscriptions & personal bills</p>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between h-[160px]">
+        <div class="glass-card border-l-4 border-l-brand-teal rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-brand-teal/5 dark:bg-brand-teal/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Biweekly Personal</h3>
-            <div id="myzone-biweekly" class="text-3xl font-extrabold mt-3 text-slate-800 dark:text-white">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Biweekly Personal</h3>
+            <div id="myzone-biweekly" class="text-3xl font-bold mt-3 text-slate-800 dark:text-white">$0.00</div>
           </div>
-          <p class="text-xs font-medium text-slate-400 dark:text-slate-500">Calculated as Zone Total / 2</p>
+          <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 select-none">Calculated as Zone Total / 2</p>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between h-[160px]">
+        <div class="glass-card border-l-4 border-l-brand-pink rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[180px] card-hover relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-brand-pink/5 dark:bg-brand-pink/10 group-hover:scale-125 transition-transform duration-500"></div>
           <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Other Expenses (Monthly)</h3>
-            <div id="myzone-other-total" class="text-3xl font-extrabold mt-3 text-slate-800 dark:text-white">$0.00</div>
+            <h3 class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Other Expenses (Monthly)</h3>
+            <div id="myzone-other-total" class="text-3xl font-bold mt-3 text-slate-800 dark:text-white">$0.00</div>
           </div>
-          <p class="text-xs font-medium text-slate-400 dark:text-slate-500">Ferret supplies, copays & other</p>
+          <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 select-none">Ferret supplies, copays & other</p>
         </div>
 
       </section>
@@ -457,11 +497,11 @@
       <section class="w-full">
 
         <!-- Desktop Kyle's Subscriptions and Affirm Bills (hidden on mobile) -->
-        <div class="hidden md:block bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-4">
+        <div class="hidden md:block bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800/60 shadow-sm flex flex-col gap-4">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <h2 class="text-lg font-extrabold tracking-tight">Kyle's Subscriptions & Ledger</h2>
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Active subscriptions, installment payment balances, and personal expenses</p>
+              <h2 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Kyle's Subscriptions & Ledger</h2>
+              <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400/80 dark:text-slate-500/70 mt-1">Active subscriptions, installment payment balances, and personal expenses</p>
             </div>
             <!-- Add Bill Button for Kyle's Zone -->
             <button onclick="openAddBillModalForMyZone()" class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-brand-primary hover:bg-brand-primaryDark text-white rounded-xl shadow-lg shadow-brand-primary/10 flex items-center gap-1 transition-all">
@@ -556,12 +596,12 @@
           <input type="hidden" id="bill-edit-original-category">
           
           <div class="flex flex-col gap-2">
-            <label for="bill-name" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Bill Name</label>
+            <label for="bill-name" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Bill Name</label>
             <input type="text" id="bill-name" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. Electric, Netflix">
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="bill-category" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Category</label>
+            <label for="bill-category" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Category</label>
             <select id="bill-category" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer">
               <option value="utilities">Utilities</option>
               <option value="entertainment">Fun / Entertainment</option>
@@ -572,23 +612,23 @@
           </div>
 
           <div id="bill-balance-group" class="flex flex-col gap-2 hidden">
-            <label for="bill-balance" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Loan Balance (Optional)</label>
+            <label for="bill-balance" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Loan Balance (Optional)</label>
             <input type="text" id="bill-balance" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 4950.00 or -">
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="bill-cost" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Monthly Cost</label>
+            <label for="bill-cost" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Monthly Cost</label>
             <input type="number" step="0.01" id="bill-cost" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 50.00">
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="bill-date" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Due Date</label>
+            <label for="bill-date" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Due Date</label>
             <input type="text" id="bill-date" required class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="e.g. 15th, N/A">
           </div>
 
           <div class="flex items-center gap-3 mt-2">
             <input type="checkbox" id="bill-paid" class="custom-checkbox h-5 w-5">
-            <label for="bill-paid" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400 cursor-pointer">Mark as Paid</label>
+            <label for="bill-paid" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70 cursor-pointer">Mark as Paid</label>
           </div>
           
           <button type="submit" class="hidden" id="bill-form-submit-hidden"></button>
@@ -624,20 +664,20 @@
         <!-- Body -->
         <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto">
           <div class="flex flex-col gap-2">
-            <label for="sheet-url" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400">Google Sheet URL or ID</label>
+            <label for="sheet-url" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Google Sheet URL or ID</label>
             <input type="text" id="sheet-url" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
             <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
               Paste your Google Sheet URL here to enable direct, secure sync!
             </p>
 
-            <label for="google-client-id" class="text-xs font-extrabold uppercase tracking-widest text-slate-450 dark:text-slate-400 mt-4">Google OAuth Client ID</label>
+            <label for="google-client-id" class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70 mt-4">Google OAuth Client ID</label>
             <input type="text" id="google-client-id" class="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/50 rounded-xl focus:outline-none focus:border-brand-primary/50 text-slate-700 dark:text-slate-200" placeholder="1234567890-abc123xyz.apps.googleusercontent.com">
             <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
               Required to authorize secure queries to your private Google Sheet.
             </p>
 
             <div class="mt-4 border-t border-slate-100 dark:border-slate-850 pt-4 flex flex-col gap-3">
-              <label class="text-xs font-extrabold uppercase tracking-widest text-slate-455 dark:text-slate-400">Google Account Authorization</label>
+              <label class="text-[10px] font-medium uppercase tracking-widest text-slate-400/80 dark:text-slate-500/70">Google Account Authorization</label>
               <div class="flex items-center gap-3">
                 <button id="google-signin-btn" class="flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all shadow-sm">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -675,27 +715,27 @@
   </button>
 
   <!-- Mobile Premium Bottom Navigation Bar -->
-  <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/40 p-2 flex items-center justify-around shadow-lg transition-all">
+  <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/60 dark:bg-slate-950/60 backdrop-blur-md border-t border-slate-200/50 dark:border-slate-800/40 p-2 flex items-center justify-around shadow-lg transition-all">
     <button id="mobile-tab-overview" onclick="switchTab('overview')" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25a2.25 2.25 0 0 1 2.25 2.25V8.25A2.25 2.25 0 0 1 6 10.5H3.75V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
       </svg>
       <span class="text-[10px] font-bold uppercase tracking-wider">Overview</span>
     </button>
     <button id="mobile-tab-ledger" onclick="switchTab('ledger')" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12M8.25 17.25h12M3.75 6.75h.007v.008H3.75V6.75Zm0 5.25h.007v.008H3.75V12Zm0 5.25h.007v.008H3.75v-.008Z" />
       </svg>
       <span class="text-[10px] font-bold uppercase tracking-wider">Ledger</span>
     </button>
     <button id="mobile-tab-myzone" onclick="switchTab('myzone')" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
       </svg>
       <span class="text-[10px] font-bold uppercase tracking-wider">My Zone</span>
     </button>
     <button onclick="document.getElementById('settings-close-btn') ? document.getElementById('settings-btn').click() : null" class="flex flex-col items-center justify-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500 hover:text-brand-primary transition-all bottom-nav-inactive interactive-tap">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5.5 h-5.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.594 3.94ZM12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
       </svg>
       <span class="text-[10px] font-bold uppercase tracking-wider">Settings</span>
