@@ -18,6 +18,8 @@ let state = {
   activeTab: "overview",
   theme: localStorage.getItem("budget_theme") || "light",
   paidStates: JSON.parse(localStorage.getItem("budget_paid_states")) || {},
+  sortColumn: localStorage.getItem("budget_ledger_sort_col") || "name",
+  sortOrder: localStorage.getItem("budget_ledger_sort_order") || "asc",
   myzoneSortColumn: localStorage.getItem("budget_myzone_sort_col") || "date",
   myzoneSortOrder: localStorage.getItem("budget_myzone_sort_order") || "asc"
 };
@@ -989,6 +991,22 @@ function updateSortHeadersUI() {
   });
 }
 
+function updateMyZoneSortHeadersUI() {
+  const columns = ["name", "cost", "debt", "date", "paid"];
+  columns.forEach(col => {
+    const span = document.getElementById(`myzone-sort-icon-${col}`);
+    if (span) {
+      if (state.myzoneSortColumn === col) {
+        span.innerText = state.myzoneSortOrder === "asc" ? " ▲" : " ▼";
+        span.className = "text-brand-primary font-extrabold text-[10px]";
+      } else {
+        span.innerText = "";
+        span.className = "";
+      }
+    }
+  });
+}
+
 // Render Bill Ledger Tab
 function renderLedger() {
   if (!state.budgetData) return;
@@ -998,6 +1016,12 @@ function renderLedger() {
   if (!state.sortOrder) state.sortOrder = "asc";
   
   updateSortHeadersUI();
+
+  // Sync mobile sort selector
+  const mobileSortSelector = document.getElementById("ledger-sort-selector");
+  if (mobileSortSelector) {
+    mobileSortSelector.value = `${state.sortColumn}-${state.sortOrder}`;
+  }
   
   const d = state.budgetData;
   const searchVal = elements.ledgerSearch.value.toLowerCase().trim();
@@ -1196,6 +1220,15 @@ window.toggleBillPaid = async function(category, itemName, isChecked, checkboxEl
 // Render My Zone Tab
 function renderMyZone() {
   if (!state.budgetData) return;
+
+  // Sync mobile sort selector
+  const mobileSortSelector = document.getElementById("myzone-sort-selector");
+  if (mobileSortSelector) {
+    mobileSortSelector.value = `${state.myzoneSortColumn}-${state.myzoneSortOrder}`;
+  }
+
+  // Sync desktop headers UI
+  updateMyZoneSortHeadersUI();
   
   const d = state.budgetData;
   
@@ -1592,6 +1625,18 @@ window.toggleLedgerSortMobile = function(sortValue) {
   localStorage.setItem("budget_ledger_sort_col", state.sortColumn);
   localStorage.setItem("budget_ledger_sort_order", state.sortOrder);
   renderLedger();
+};
+
+window.toggleMyZoneSort = function(colName) {
+  if (state.myzoneSortColumn === colName) {
+    state.myzoneSortOrder = state.myzoneSortOrder === "asc" ? "desc" : "asc";
+  } else {
+    state.myzoneSortColumn = colName;
+    state.myzoneSortOrder = "asc";
+  }
+  localStorage.setItem("budget_myzone_sort_col", state.myzoneSortColumn);
+  localStorage.setItem("budget_myzone_sort_order", state.myzoneSortOrder);
+  renderMyZone();
 };
 
 window.toggleMyZoneSortMobile = function(sortValue) {

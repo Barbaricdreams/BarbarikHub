@@ -475,12 +475,22 @@
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm font-semibold">
               <thead>
-                <tr class="border-b border-slate-100 dark:border-slate-800 text-xs uppercase font-extrabold tracking-wider text-slate-400 dark:text-slate-500 bg-slate-50/20 dark:bg-slate-800/5">
-                  <th class="py-3 px-2">Name</th>
-                  <th class="py-3 px-2 text-right">Cost</th>
-                  <th class="py-3 px-2 text-right">Loan Balance</th>
-                  <th class="py-3 px-2 text-right">Due Date</th>
-                  <th class="py-3 px-2 text-center">Paid</th>
+                <tr class="border-b border-slate-100 dark:border-slate-800 text-xs uppercase font-extrabold tracking-wider text-slate-400 dark:text-slate-500 bg-slate-50/20 dark:bg-slate-800/5 select-none">
+                  <th onclick="toggleMyZoneSort('name')" class="py-3 px-2 cursor-pointer hover:text-brand-primary transition-colors">
+                    Name <span id="myzone-sort-icon-name" class="text-brand-primary font-bold"></span>
+                  </th>
+                  <th onclick="toggleMyZoneSort('cost')" class="py-3 px-2 text-right cursor-pointer hover:text-brand-primary transition-colors">
+                    Cost <span id="myzone-sort-icon-cost" class="text-brand-primary font-bold"></span>
+                  </th>
+                  <th onclick="toggleMyZoneSort('debt')" class="py-3 px-2 text-right cursor-pointer hover:text-brand-primary transition-colors">
+                    Loan Balance <span id="myzone-sort-icon-debt" class="text-brand-primary font-bold"></span>
+                  </th>
+                  <th onclick="toggleMyZoneSort('date')" class="py-3 px-2 text-right cursor-pointer hover:text-brand-primary transition-colors">
+                    Due Date <span id="myzone-sort-icon-date" class="text-brand-primary font-bold"></span>
+                  </th>
+                  <th onclick="toggleMyZoneSort('paid')" class="py-3 px-2 text-center cursor-pointer hover:text-brand-primary transition-colors">
+                    Paid <span id="myzone-sort-icon-paid" class="text-brand-primary font-bold"></span>
+                  </th>
                   <th class="py-3 px-2 text-center">Actions</th>
                 </tr>
               </thead>
