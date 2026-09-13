@@ -1,11 +1,14 @@
 {
-  "name": "budget-canvas-dashboard",
-  "version": "1.0.0",
-  "description": "Premium local single-page visual canvas dashboard for budget tracking.",
+  "name": "budget-barbarikz",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Budget - Barbarikz: shared household bills and a Personal Zone, powered by Google Sheets.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "node --test tests/*.test.js",
+    "build": "node scripts/build.js"
   },
   "author": "Antigravity Pair Programmer",
   "license": "ISC",

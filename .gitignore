@@ -9,4 +9,6 @@ yarn-error.log*
 /.cache
 /.idea
 /.vscode
+/.private/
+/test-results/
 *.log
